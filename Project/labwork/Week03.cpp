@@ -56,7 +56,7 @@ void VulkanBase::createRenderPass() {
 	}
 }
 
-void VulkanBase::createGraphicsPipeline() {
+void VulkanBase::createGraphicsPipeline(const VkDevice& vkDevice) {
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = 1;
@@ -114,18 +114,10 @@ void VulkanBase::createGraphicsPipeline() {
 
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 
-	VkPipelineShaderStageCreateInfo vertShaderStageInfo = createVertexShaderInfo();
-	VkPipelineShaderStageCreateInfo fragShaderStageInfo = createFragmentShaderInfo();
-
-	VkPipelineShaderStageCreateInfo shaderStages[] = {
-		vertShaderStageInfo,
-		fragShaderStageInfo
-	};
-
-	pipelineInfo.stageCount = 2;
-	pipelineInfo.pStages = shaderStages;
-	pipelineInfo.pVertexInputState = &createVertexInputStateInfo();
-	pipelineInfo.pInputAssemblyState = &createInputAssemblyStateInfo();
+	pipelineInfo.stageCount = (uint32_t)m_GradientShader.GetShaderStages().size();
+	pipelineInfo.pStages = m_GradientShader.GetShaderStages().data();
+	pipelineInfo.pVertexInputState = &m_GradientShader.createVertexInputStateInfo();
+	pipelineInfo.pInputAssemblyState = &m_GradientShader.createInputAssemblyStateInfo();
 
 	pipelineInfo.pViewportState = &viewportState;
 	pipelineInfo.pRasterizationState = &rasterizer;
@@ -141,6 +133,5 @@ void VulkanBase::createGraphicsPipeline() {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
-	vkDestroyShaderModule(device, vertShaderStageInfo.module, nullptr);
-	vkDestroyShaderModule(device, fragShaderStageInfo.module, nullptr);
+	m_GradientShader.DestroyShaderModules(vkDevice);
 }

@@ -17,6 +17,8 @@
 #include <algorithm>
 
 
+#include"HelperClasses/GP2Shader.h"
+
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
@@ -65,8 +67,11 @@ private:
 		createImageViews();
 		
 		// week 03
+		m_GradientShader.Initialize(device, physicalDevice);
+
+
 		createRenderPass();
-		createGraphicsPipeline();
+		createGraphicsPipeline(device);
 		createFrameBuffers();
 		// week 02
 		createCommandPool();
@@ -126,8 +131,6 @@ private:
 		}
 	}
 
-	
-
 	// Week 01: 
 	// Actual window
 	// simple fragment + vertex shader creation functions
@@ -137,11 +140,16 @@ private:
 	GLFWwindow* window;
 	void initWindow();
 
-	VkPipelineShaderStageCreateInfo createFragmentShaderInfo();
+	/*VkPipelineShaderStageCreateInfo createFragmentShaderInfo();
 	VkPipelineShaderStageCreateInfo createVertexShaderInfo();
 	VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
 	VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
-	VkShaderModule createShaderModule(const std::vector<char>& code);
+	VkShaderModule createShaderModule(const std::vector<char>& code);*/
+	GP2Shader m_GradientShader
+	{
+		"shaders/shader.vert.spv",
+		"shaders/shader.frag.spv"
+	};;
 
 	void drawScene();
 
@@ -170,7 +178,7 @@ private:
 
 	void createFrameBuffers();
 	void createRenderPass();
-	void createGraphicsPipeline();
+	void createGraphicsPipeline(const VkDevice& vkDevice);
 
 	// Week 04
 	// Swap chain and image view support
