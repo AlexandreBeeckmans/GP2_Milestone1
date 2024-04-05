@@ -1,10 +1,14 @@
 #include "GP2Shader.h"
 #include <vulkanbase/VulkanUtil.h>
 
+#include "HelperClasses/Vertex.h"
+
 GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile):
 	m_VertexShaderFile{ vertexShaderFile },
 	m_FragmentShaderFile{ fragmentShaderFile }
 {
+	m_BindingDescription = Vertex::getBindingDescription();
+	m_AttributeDescription = Vertex::getAttributeDescriptions();
 }
 
 void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
@@ -28,19 +32,13 @@ const std::vector<VkPipelineShaderStageCreateInfo>& GP2Shader::GetShaderStages()
 
 VkPipelineVertexInputStateCreateInfo GP2Shader::createVertexInputStateInfo()
 {
-	/*m_VertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	m_VertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	m_VertexInputInfo.vertexBindingDescriptionCount = 1;
 	m_VertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_AttributeDescription.size());
 	m_VertexInputInfo.pVertexBindingDescriptions = &m_BindingDescription;
 	m_VertexInputInfo.pVertexAttributeDescriptions = m_AttributeDescription.data();
 
-	return m_VertexInputInfo;*/
-
-	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	return vertexInputInfo;
+	return m_VertexInputInfo;
 }
 
 VkPipelineInputAssemblyStateCreateInfo GP2Shader::createInputAssemblyStateInfo()
