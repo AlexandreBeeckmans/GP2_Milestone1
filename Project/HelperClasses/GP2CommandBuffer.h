@@ -17,8 +17,13 @@ public:
 		return m_CommandBuffer;
 	}
 
+	const VkCommandBuffer* GetpVkCommandBuffer()const
+	{
+		return &(m_CommandBuffer);
+	}
+
 	void Reset()const;
-	void BeginRecording()const;
+	void BeginRecording(const VkCommandBufferUsageFlags& usage = 0)const;
 	void EndRecording()const;
 
 	void Submit(VkSubmitInfo& info)const;
