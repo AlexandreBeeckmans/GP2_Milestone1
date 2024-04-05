@@ -4,29 +4,41 @@
 #include "Vertex.h"
 
 GP2Mesh::GP2Mesh()
-{}
+{
+}
 
 void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
 {
 	CreateVertexBuffer(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
+	CreateIndexBuffer(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
 }
 void GP2Mesh::Destroy(const VkDevice& vkDevice)
 {
 	vkDestroyBuffer(vkDevice, m_VertexBuffer, nullptr);
 	vkFreeMemory(vkDevice, m_VertexBufferMemory, nullptr);
+
+	vkDestroyBuffer(vkDevice, m_IndexBuffer, nullptr);
+	vkFreeMemory(vkDevice, m_IndexBufferMemory, nullptr);
 }
 
 void GP2Mesh::Draw(VkCommandBuffer commandBuffer) const
 {
 	VkBuffer vertexBuffers[] = { m_VertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
+
+
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Vertices.size()), 1, 0, 0);
+	vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer, 0, VK_INDEX_TYPE_UINT16);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 }
 
 void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color)
 {
 	m_Vertices.push_back({ pos, color });
+}
+void GP2Mesh::AddIndex(const uint16_t value)
+{
+	m_Indices.push_back(value);
 }
 
 void GP2Mesh::CreateVertexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
@@ -51,7 +63,6 @@ void GP2Mesh::CreateVertexBuffer(const VkDevice& vkDevice, const VkPhysicalDevic
 	vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
 
 }
-
 void GP2Mesh::CreateBuffer(const VkDeviceSize size, const VkBufferUsageFlags& usage, const VkMemoryPropertyFlags& properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
 {
 	VkBufferCreateInfo bufferInfo{};
@@ -112,6 +123,24 @@ void GP2Mesh::CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuffer, c
 	vkQueueWaitIdle(graphicsQueue);
 
 	vkFreeCommandBuffers(vkDevice, commandPool.GetVkCommandPool(), 1, commandBuffer.GetpVkCommandBuffer());
+}
+
+void GP2Mesh::CreateIndexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
+{
+	VkDeviceSize bufferSize = sizeof(m_Indices[0]) * m_Indices.size();
+	VkBuffer stagingBuffer{};
+	VkDeviceMemory stagingBufferMemory{};
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory, vkDevice, vkPhysicalDevice);
+
+	void* data{};
+	vkMapMemory(vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, m_Indices.data(), size_t(bufferSize));
+	vkUnmapMemory(vkDevice, stagingBufferMemory);
+	CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_IndexBuffer, m_IndexBufferMemory, vkDevice, vkPhysicalDevice);
+
+	CopyBuffer(stagingBuffer, m_IndexBuffer, bufferSize, commandPool, vkDevice, graphicsQueue);
+	vkDestroyBuffer(vkDevice, stagingBuffer, nullptr);
+	vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
 }
 
 uint32_t GP2Mesh::FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice)

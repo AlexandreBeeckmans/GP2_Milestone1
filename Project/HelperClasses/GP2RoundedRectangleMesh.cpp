@@ -8,8 +8,7 @@ GP2RoundedRectangleMesh::GP2RoundedRectangleMesh(const glm::vec2& center, const 
 	m_CornerRadiusX{ (width / 2) * roundedPercentage },
 	m_CornerRadiusY{ (height / 2) * roundedPercentage }
 {
-
-
+	AddIndex(0);
 
 	const glm::vec2 topLeftCenter
 	{
