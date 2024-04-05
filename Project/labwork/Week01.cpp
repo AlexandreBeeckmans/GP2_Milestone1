@@ -9,8 +9,5 @@ void VulkanBase::initWindow() {
 
 void VulkanBase::drawScene(const VkCommandBuffer& commandBuffer) 
 {
-	VkBuffer vertexBuffers[] = { m_VertexBuffer };
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	vkCmdDraw(commandBuffer, static_cast<uint32_t>(m_Vertices.size()), 1, 0, 0);
+	m_Mesh.Draw(commandBuffer);
 }

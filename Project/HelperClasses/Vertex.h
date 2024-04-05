@@ -34,6 +34,18 @@ struct Vertex
 
 		return attributeDescriptions;
 	}
+
+	static VkPipelineVertexInputStateCreateInfo GetVertexInputInfo(const VkVertexInputBindingDescription& bindingDescription, const std::array<VkVertexInputAttributeDescription, 2>& attributeDescription)
+	{
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		vertexInputInfo.vertexBindingDescriptionCount = 1;
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescription.size());
+		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+		vertexInputInfo.pVertexAttributeDescriptions = attributeDescription.data();
+
+		return vertexInputInfo;
+	}
 };
 
 struct VertexUBO

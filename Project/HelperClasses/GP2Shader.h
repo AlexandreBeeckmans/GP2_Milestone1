@@ -22,7 +22,7 @@ public:
 
 	const std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStages();
 
-	VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
+	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo();
 	VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
 
 private:

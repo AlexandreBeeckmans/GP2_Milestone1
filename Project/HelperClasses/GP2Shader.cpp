@@ -9,6 +9,7 @@ GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fra
 {
 	m_BindingDescription = Vertex::getBindingDescription();
 	m_AttributeDescription = Vertex::getAttributeDescriptions();
+	m_VertexInputInfo = Vertex::GetVertexInputInfo(m_BindingDescription, m_AttributeDescription);
 }
 
 void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
@@ -30,14 +31,8 @@ const std::vector<VkPipelineShaderStageCreateInfo>& GP2Shader::GetShaderStages()
 	return m_ShaderStages;
 }
 
-VkPipelineVertexInputStateCreateInfo GP2Shader::createVertexInputStateInfo()
+VkPipelineVertexInputStateCreateInfo GP2Shader::GetVertexInputStateInfo()
 {
-	m_VertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	m_VertexInputInfo.vertexBindingDescriptionCount = 1;
-	m_VertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_AttributeDescription.size());
-	m_VertexInputInfo.pVertexBindingDescriptions = &m_BindingDescription;
-	m_VertexInputInfo.pVertexAttributeDescriptions = m_AttributeDescription.data();
-
 	return m_VertexInputInfo;
 }
 
