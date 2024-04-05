@@ -14,7 +14,9 @@ public:
 
 	void Initialize(const VkDevice& device, const QueueFamilyIndices& queue);
 	void Destroy();
-	GP2CommandBuffer CreateCommandBuffer()const;
+	GP2CommandBuffer CreateCommandBuffer() const;
+
+	VkCommandPool GetVkCommandPool() const { return m_CommandPool; };
 
 private:
 	VkCommandPool m_CommandPool;

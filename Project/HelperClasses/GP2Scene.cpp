@@ -14,11 +14,11 @@ GP2Scene::GP2Scene()
 	m_Meshes.push_back(std::move(roundedRectangleMesh));
 }
 
-void GP2Scene::Initialize(const VkPhysicalDevice& vkPhysicalDevice, const VkDevice& vkDevice)
+void GP2Scene::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
 {
 	for (GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.Initialize(vkDevice, vkPhysicalDevice);
+		mesh.Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
 	}
 }
 

@@ -10,7 +10,7 @@ public:
 	GP2Scene();
 	~GP2Scene() = default;
 
-	void Initialize(const VkPhysicalDevice& vkPhysicalDevice, const VkDevice& vKDevice);
+	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
 	void Cleanup(const VkDevice& vkDevice);
 	void Draw(const VkCommandBuffer& vkCommandBuffer);
 

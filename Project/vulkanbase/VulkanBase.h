@@ -82,7 +82,7 @@ private:
 		// week 02
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
 
-		m_Scene.Initialize(physicalDevice, device);
+		m_Scene.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue);
 
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
