@@ -4,14 +4,7 @@
 #include "Vertex.h"
 
 GP2Mesh::GP2Mesh()
-{
-	AddVertex({ -0.25f, -0.25f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ 0.25f, -0.25f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ -0.25f, 0.25f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ -0.25f, 0.25f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ 0.25f, -0.25f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ 0.25f, 0.25f }, { 1.0f, 0.0f, 0.0f });
-}
+{}
 
 void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
 {
