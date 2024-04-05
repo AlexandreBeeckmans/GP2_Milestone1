@@ -9,5 +9,5 @@ void VulkanBase::initWindow() {
 
 void VulkanBase::drawScene(const VkCommandBuffer& commandBuffer) 
 {
-	m_Mesh.Draw(commandBuffer);
+	m_Scene.Draw(commandBuffer);
 }

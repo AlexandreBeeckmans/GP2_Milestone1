@@ -42,7 +42,7 @@ set(SOURCES
     "HelperClasses/GP2CommandPool.cpp"
     "HelperClasses/GP2CommandBuffer.h"
     "HelperClasses/GP2CommandBuffer.cpp"
-    "HelperClasses/Vertex.h" "HelperClasses/GP2Mesh.h" "HelperClasses/GP2Mesh.cpp")
+    "HelperClasses/Vertex.h" "HelperClasses/GP2Mesh.h" "HelperClasses/GP2Mesh.cpp" "HelperClasses/GP2Scene.h" "HelperClasses/GP2Scene.cpp")
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )

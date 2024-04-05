@@ -22,7 +22,8 @@
 #include "HelperClasses/GP2CommandBuffer.h"
 #include "HelperClasses/Vertex.h"
 
-#include "HelperClasses/GP2Mesh.h"
+//#include "HelperClasses/GP2Mesh.h"
+#include "HelperClasses/GP2Scene.h"
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -81,7 +82,7 @@ private:
 		// week 02
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
 
-		m_Mesh.Initialize(device, physicalDevice);
+		m_Scene.Initialize(physicalDevice, device);
 
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
@@ -100,7 +101,7 @@ private:
 
 	void cleanup() 
 	{
-		m_Mesh.Destroy(device);
+		m_Scene.Cleanup(device);
 
 		vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
@@ -168,7 +169,7 @@ private:
 	GP2CommandPool m_CommandPool{};
 	GP2CommandBuffer m_CommandBuffer{};
 	
-	GP2Mesh m_Mesh{};
+	GP2Scene m_Scene{};
 
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
