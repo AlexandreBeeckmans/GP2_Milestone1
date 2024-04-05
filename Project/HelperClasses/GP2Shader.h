@@ -38,7 +38,7 @@ private:
 	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages;
 
 	//Week 2
-	VkPipelineVertexInputStateCreateInfo m_VertexInputInfo{};
+	/*VkPipelineVertexInputStateCreateInfo m_VertexInputInfo{};
 	VkVertexInputBindingDescription m_BindingDescription{};
-	std::array<VkVertexInputAttributeDescription, 2> m_AttributeDescription{};
+	std::array<VkVertexInputAttributeDescription, 2> m_AttributeDescription{};*/
 };
