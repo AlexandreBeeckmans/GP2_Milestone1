@@ -24,7 +24,12 @@ public:
 	void AddVertex(glm::vec2 pos, glm::vec3 color);
 	void AddIndex(const uint16_t value);
 
+	void UpdateUniformBuffer(const uint32_t& currentImage, const VkExtent2D& swapChainExtent);
+
+protected:
 	int GetNumberVertices()const;
+
+
 
 private:
 
@@ -33,6 +38,7 @@ private:
 	void CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuffer, const VkDeviceSize& size, const GP2CommandPool& commandPool, const VkDevice& vkDevice, const VkQueue& graphicsQueue);
 
 	void CreateIndexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
+	void CreateUniformBuffers(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
 
 	uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
 
@@ -45,4 +51,10 @@ private:
 	VkDeviceMemory m_IndexBufferMemory{};
 	std::vector<uint16_t> m_Indices{};
 
+
+	
+
+	std::vector<VkBuffer> m_UniformBuffers;
+	std::vector<VkDeviceMemory> m_UniformBuffersMemory;
+	std::vector<void*> m_UniformBuffersMapped;
 };

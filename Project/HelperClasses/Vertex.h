@@ -48,7 +48,7 @@ struct Vertex
 	}
 };
 
-struct VertexUBO
+struct UniformBufferObject
 {
 	glm::mat4 model;
 	glm::mat4 view;

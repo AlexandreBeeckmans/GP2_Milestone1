@@ -2,6 +2,13 @@
 #include <stdexcept>
 
 #include "Vertex.h"
+#include "vulkanbase/VulkanBase.h"
+
+
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include <chrono>
 
 GP2Mesh::GP2Mesh()
 {
@@ -11,6 +18,7 @@ void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhy
 {
 	CreateVertexBuffer(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
 	CreateIndexBuffer(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
+	CreateUniformBuffers(vkDevice, vkPhysicalDevice);
 }
 void GP2Mesh::Destroy(const VkDevice& vkDevice)
 {
@@ -19,6 +27,12 @@ void GP2Mesh::Destroy(const VkDevice& vkDevice)
 
 	vkDestroyBuffer(vkDevice, m_IndexBuffer, nullptr);
 	vkFreeMemory(vkDevice, m_IndexBufferMemory, nullptr);
+
+	for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		vkDestroyBuffer(vkDevice, m_UniformBuffers[i], nullptr);
+		vkFreeMemory(vkDevice, m_UniformBuffersMemory[i], nullptr);
+	}
 }
 
 void GP2Mesh::Draw(VkCommandBuffer commandBuffer) const
@@ -40,10 +54,28 @@ void GP2Mesh::AddIndex(const uint16_t value)
 {
 	m_Indices.push_back(value);
 }
+void GP2Mesh::UpdateUniformBuffer(const uint32_t& currentImage, const VkExtent2D& swapChainExtent)
+{
+	static auto startTime = std::chrono::high_resolution_clock::now();
+
+	
+
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+	UniformBufferObject ubo{};
+	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / float(swapChainExtent.height), 0.1f, 10.0f);
+
+	ubo.proj[1][1] *= -1;
+
+	memcpy(m_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+}
 
 int GP2Mesh::GetNumberVertices()const
 {
-	return m_Vertices.size();
+	return int(m_Vertices.size());
 }
 
 void GP2Mesh::CreateVertexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
@@ -146,6 +178,21 @@ void GP2Mesh::CreateIndexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice
 	CopyBuffer(stagingBuffer, m_IndexBuffer, bufferSize, commandPool, vkDevice, graphicsQueue);
 	vkDestroyBuffer(vkDevice, stagingBuffer, nullptr);
 	vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
+}
+
+void GP2Mesh::CreateUniformBuffers(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
+{
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+	m_UniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+	m_UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+	m_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_UniformBuffers[i], m_UniformBuffersMemory[i], vkDevice, vkPhysicalDevice);
+		vkMapMemory(vkDevice, m_UniformBuffersMemory[i], 0, bufferSize, 0, &m_UniformBuffersMapped[i]);
+	}
 }
 
 uint32_t GP2Mesh::FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice)

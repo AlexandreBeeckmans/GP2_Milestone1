@@ -29,6 +29,14 @@ void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer)
 		mesh.Draw(vkCommandBuffer);
 	}
 }
+
+void GP2Scene::UpdateUniformBuffers(const uint32_t& currentImage, const VkExtent2D& swapChainExtent)
+{
+	for (GP2Mesh& mesh : m_Meshes)
+	{
+		mesh.UpdateUniformBuffer(currentImage, swapChainExtent);
+	}
+}
 void GP2Scene::Cleanup(const VkDevice& vkDevice)
 {
 	for (GP2Mesh& mesh : m_Meshes)

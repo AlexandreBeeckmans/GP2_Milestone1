@@ -22,8 +22,10 @@
 #include "HelperClasses/GP2CommandBuffer.h"
 #include "HelperClasses/Vertex.h"
 
-//#include "HelperClasses/GP2Mesh.h"
 #include "HelperClasses/GP2Scene.h"
+
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -77,6 +79,8 @@ private:
 
 
 		createRenderPass();
+
+		CreateDescriptorSetLayout();
 		createGraphicsPipeline(device);
 		createFrameBuffers();
 		// week 02
@@ -111,6 +115,8 @@ private:
 		for (auto framebuffer : swapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
+
+		vkDestroyDescriptorSetLayout(device, m_DescriptorSetLayout, nullptr);
 
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
@@ -182,6 +188,8 @@ private:
 	// Graphics pipeline
 	
 	std::vector<VkFramebuffer> swapChainFramebuffers;
+
+	VkDescriptorSetLayout m_DescriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
@@ -243,4 +251,29 @@ private:
 		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 		return VK_FALSE;
 	}
+
+
+	void CreateDescriptorSetLayout()
+	{
+		VkDescriptorSetLayoutBinding uboLayoutBinding{};
+		uboLayoutBinding.binding = 0;
+		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayoutBinding.descriptorCount = 1;
+
+		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		uboLayoutBinding.pImmutableSamplers = nullptr; //Optional
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = 1;
+		layoutInfo.pBindings = &uboLayoutBinding;
+
+		if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create descriptor set layout");
+		}
+	}
+
+
+	uint32_t m_CurrentFrame = 0;
 };
