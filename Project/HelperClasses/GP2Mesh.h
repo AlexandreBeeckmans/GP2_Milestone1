@@ -22,7 +22,6 @@ public:
 
 	void Draw(VkCommandBuffer commandBuffer) const;
 	
-
 	void AddVertex(glm::vec2 pos, glm::vec3 color);
 	void AddIndex(const uint16_t value);
 
@@ -31,18 +30,18 @@ public:
 protected:
 	int GetNumberVertices()const;
 
-
-
 private:
+	void GP2Mesh::CreateUniformBuffers(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
+
 	std::unique_ptr<GP2DataBuffer> m_VertexBuffer{};
 	std::vector<Vertex> m_Vertices{};
 
 	std::unique_ptr<GP2DataBuffer> m_IndexBuffer{};
 	std::vector<uint16_t> m_Indices{};
 
+	/*std::vector<VkBuffer> m_UniformBuffers;
+	std::vector<VkDeviceMemory> m_UniformBuffersMemory;*/
 
-
-	std::vector<VkBuffer> m_UniformBuffers;
-	std::vector<VkDeviceMemory> m_UniformBuffersMemory;
+	std::vector<GP2DataBuffer> m_UniformBuffers;
 	std::vector<void*> m_UniformBuffersMapped;
 };

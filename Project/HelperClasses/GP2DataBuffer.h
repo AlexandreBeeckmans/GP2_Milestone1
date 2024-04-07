@@ -7,6 +7,8 @@
 class GP2DataBuffer
 {
 public:
+
+	GP2DataBuffer() {};
 	GP2DataBuffer(
 		VkPhysicalDevice physicalDevice,
 		VkDevice device,
@@ -26,15 +28,22 @@ public:
 	void BindAsVertexBuffer(VkCommandBuffer commandBuffer);
 	void BindAsIndexBuffer(VkCommandBuffer commandBuffer);
 
-	VkBuffer GetVkBuffer() 
+	VkBuffer& GetVkBuffer() 
 	{
 		return m_VkBuffer;
+	};
+
+	VkDeviceMemory& GetVkBufferMemory()
+	{
+		return m_VkBufferMemory;
 	};
 
 	VkDeviceSize GetSizeInBytes()
 	{
 		return m_Size;
 	};
+
+	void CreateBuffer(const VkDeviceSize size, const VkBufferUsageFlags& usage, const VkMemoryPropertyFlags& properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
 
 private:
 	uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
@@ -45,6 +54,6 @@ private:
 	VkDeviceMemory m_VkBufferMemory;
 
 
-	void CreateBuffer(const VkDeviceSize size, const VkBufferUsageFlags& usage, const VkMemoryPropertyFlags& properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
+	
 	void CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuffer, const VkDeviceSize& size, const GP2CommandPool& commandPool, const VkDevice& vkDevice, const VkQueue& graphicsQueue);
 };

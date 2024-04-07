@@ -22,17 +22,16 @@ void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhy
 	VkDeviceSize indexBufferSize = sizeof(m_Indices[0]) * m_Indices.size();
 	m_IndexBuffer = std::make_unique<GP2DataBuffer>(vkPhysicalDevice, vkDevice, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBufferSize, m_Indices.data(), commandPool, graphicsQueue);
 
-	//CreateUniformBuffers(vkDevice, vkPhysicalDevice);
+	CreateUniformBuffers(vkDevice, vkPhysicalDevice);
 }
 void GP2Mesh::Destroy(const VkDevice& vkDevice)
 {
 	m_VertexBuffer->Destroy(vkDevice);
 	m_IndexBuffer->Destroy(vkDevice);
-	/*for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
 	{
-		vkDestroyBuffer(vkDevice, m_UniformBuffers[i], nullptr);
-		vkFreeMemory(vkDevice, m_UniformBuffersMemory[i], nullptr);
-	}*/
+		m_UniformBuffers[i].Destroy(vkDevice);
+	}
 }
 
 void GP2Mesh::Draw(VkCommandBuffer commandBuffer) const
@@ -75,17 +74,16 @@ int GP2Mesh::GetNumberVertices()const
 	return int(m_Vertices.size());
 }
 
-//void GP2Mesh::CreateUniformBuffers(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
-//{
-//	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-//
-//	m_UniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-//	m_UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-//	m_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
-//
-//	for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
-//	{
-//		CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_UniformBuffers[i], m_UniformBuffersMemory[i], vkDevice, vkPhysicalDevice);
-//		vkMapMemory(vkDevice, m_UniformBuffersMemory[i], 0, bufferSize, 0, &m_UniformBuffersMapped[i]);
-//	}
-//}
+void GP2Mesh::CreateUniformBuffers(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
+{
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+	m_UniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+	m_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; ++i)
+	{
+		m_UniformBuffers[i].CreateBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_UniformBuffers[i].GetVkBuffer(), m_UniformBuffers[i].GetVkBufferMemory(), vkDevice, vkPhysicalDevice);
+		vkMapMemory(vkDevice, m_UniformBuffers[i].GetVkBufferMemory(), 0, bufferSize, 0, &m_UniformBuffersMapped[i]);
+	}
+}
