@@ -41,6 +41,11 @@ void GP2Mesh::AddIndex(const uint16_t value)
 	m_Indices.push_back(value);
 }
 
+int GP2Mesh::GetNumberVertices()const
+{
+	return m_Vertices.size();
+}
+
 void GP2Mesh::CreateVertexBuffer(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
 {
 

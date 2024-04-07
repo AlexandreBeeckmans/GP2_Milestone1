@@ -24,6 +24,7 @@ public:
 	void AddVertex(glm::vec2 pos, glm::vec3 color);
 	void AddIndex(const uint16_t value);
 
+	int GetNumberVertices()const;
 
 private:
 

@@ -8,5 +8,5 @@ public:
 	GP2RectangleMesh(const glm::vec2& center, const float width, const float height);
 
 protected:
-	void InitRectangleVertices(const glm::vec2& center, const float width, const float height);
+	void InitRectangleVertices(const glm::vec2& center, const float width, const float height, const int baseIndex = 0);
 };
