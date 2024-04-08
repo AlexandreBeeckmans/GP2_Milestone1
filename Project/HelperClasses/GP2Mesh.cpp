@@ -38,6 +38,10 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer) const
 
 void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color)
 {
+	AddVertex({ pos.x, pos.y, 0 }, color);
+}
+void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color)
+{
 	m_Vertices.push_back({ pos, color });
 }
 void GP2Mesh::AddIndex(const uint16_t value)

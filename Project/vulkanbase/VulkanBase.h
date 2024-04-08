@@ -165,8 +165,8 @@ private:
 
 	GP2Shader m_GradientShader
 	{
-		"shaders/3DShader.vert.spv",
-		"shaders/3DShader.frag.spv"
+		"shaders/shader.vert.spv",
+		"shaders/shader.frag.spv"
 	};;
 
 	void drawScene(const VkCommandBuffer& commandBuffer);
