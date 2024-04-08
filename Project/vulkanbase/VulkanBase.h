@@ -80,7 +80,9 @@ private:
 
 		createRenderPass();
 
-		CreateDescriptorSetLayout();
+		m_GradientShader.CreateDescriptorSetLayout(device);
+		m_GradientShader.CreateDescriptorSets(device);
+
 		createGraphicsPipeline(device);
 		createFrameBuffers();
 		// week 02
@@ -116,7 +118,8 @@ private:
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 
-		vkDestroyDescriptorSetLayout(device, m_DescriptorSetLayout, nullptr);
+		m_GradientShader.DestroyUniformBuffer(device);
+		vkDestroyDescriptorSetLayout(device, m_GradientShader.GetDescriptorSetLayout(), nullptr);
 
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
@@ -162,8 +165,8 @@ private:
 
 	GP2Shader m_GradientShader
 	{
-		"shaders/shader.vert.spv",
-		"shaders/shader.frag.spv"
+		"shaders/3DShader.vert.spv",
+		"shaders/3DShader.frag.spv"
 	};;
 
 	void drawScene(const VkCommandBuffer& commandBuffer);
@@ -189,7 +192,7 @@ private:
 	
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	VkDescriptorSetLayout m_DescriptorSetLayout;
+	//VkDescriptorSetLayout m_DescriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
@@ -251,29 +254,5 @@ private:
 		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 		return VK_FALSE;
 	}
-
-
-	void CreateDescriptorSetLayout()
-	{
-		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-		uboLayoutBinding.binding = 0;
-		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		uboLayoutBinding.descriptorCount = 1;
-
-		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-		uboLayoutBinding.pImmutableSamplers = nullptr; //Optional
-
-		VkDescriptorSetLayoutCreateInfo layoutInfo{};
-		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-		layoutInfo.bindingCount = 1;
-		layoutInfo.pBindings = &uboLayoutBinding;
-
-		if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create descriptor set layout");
-		}
-	}
-
-
 	uint32_t m_CurrentFrame = 0;
 };

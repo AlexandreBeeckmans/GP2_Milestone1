@@ -16,6 +16,15 @@ void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkP
 {
 	m_ShaderStages.push_back(createFragmentShaderInfo(vkDevice));
 	m_ShaderStages.push_back(createVertexShaderInfo(vkDevice));
+
+
+	m_UBOBuffer = std::make_unique<GP2DataBuffer>(vkPhysicalDevice,
+		vkDevice,
+		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		sizeof(UniformBufferObject));
+
+	m_DescriptorPool = std::make_unique<GP2DescriptorPool>(vkDevice, 0, 1);
 }
 void GP2Shader::DestroyShaderModules(const VkDevice& vkDevice)
 {
@@ -24,6 +33,12 @@ void GP2Shader::DestroyShaderModules(const VkDevice& vkDevice)
 		vkDestroyShaderModule(vkDevice, stageInfo.module, nullptr);
 	}
 	m_ShaderStages.clear();
+}
+
+void GP2Shader::DestroyUniformBuffer(const VkDevice& vkDevice)
+{
+	m_UBOBuffer->Destroy(vkDevice);
+	m_DescriptorPool->DestroyPool(vkDevice);
 }
 
 const std::vector<VkPipelineShaderStageCreateInfo>& GP2Shader::GetShaderStages()
@@ -84,4 +99,30 @@ VkShaderModule GP2Shader::createShaderModule(const VkDevice& vkDevice, const std
 	}
 
 	return shaderModule;
+}
+
+void GP2Shader::CreateDescriptorSetLayout(const VkDevice& vkDevice)
+{
+	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uboLayoutBinding.descriptorCount = 1;
+
+	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	uboLayoutBinding.pImmutableSamplers = nullptr; //Optional
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &uboLayoutBinding;
+
+	if (vkCreateDescriptorSetLayout(vkDevice, &layoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS)
+	{
+		throw std::runtime_error("failed to create descriptor set layout");
+	}
+}
+
+void GP2Shader::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index)
+{
+	m_DescriptorPool->BindDescriptorSet(buffer, layout, index);
 }

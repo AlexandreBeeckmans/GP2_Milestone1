@@ -34,7 +34,7 @@ void GP2Scene::UpdateUniformBuffers(const uint32_t& currentImage, const VkExtent
 {
 	for (GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.UpdateUniformBuffer(currentImage, swapChainExtent);
+		//mesh.UpdateUniformBuffer(currentImage, swapChainExtent);
 	}
 }
 void GP2Scene::Cleanup(const VkDevice& vkDevice)

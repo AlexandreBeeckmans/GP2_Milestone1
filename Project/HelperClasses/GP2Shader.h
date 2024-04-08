@@ -4,6 +4,12 @@
 #include <vector>
 #include <string>
 #include <array>
+#include <memory>
+
+#include "GP2DataBuffer.h"
+#include "Vertex.h"
+
+#include "GP2DescriptorPool.h"
 
 
 class GP2Shader
@@ -19,11 +25,23 @@ public:
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
 	void DestroyShaderModules(const VkDevice& vkDevice);
+	void DestroyUniformBuffer(const VkDevice& vkDevice);
 
 	const std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStages();
 
 	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo();
 	VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
+
+	void CreateDescriptorSets(const VkDevice& vkDevice)
+	{
+		m_DescriptorPool->CreateDescriptorSets(vkDevice, m_DescriptorSetLayout, { m_UBOBuffer->GetVkBuffer() });
+	}
+	void CreateDescriptorSetLayout(const VkDevice& vkDevice);
+	const VkDescriptorSetLayout& GetDescriptorSetLayout()
+	{
+		return m_DescriptorSetLayout;
+	}
+	void BindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, size_t index);
 
 private:
 
@@ -41,4 +59,13 @@ private:
 	VkPipelineVertexInputStateCreateInfo m_VertexInputInfo{};
 	VkVertexInputBindingDescription m_BindingDescription{};
 	std::array<VkVertexInputAttributeDescription, 2> m_AttributeDescription{};
+
+
+	//UBO
+	VkDescriptorSetLayout m_DescriptorSetLayout;
+	std::unique_ptr<GP2DataBuffer > m_UBOBuffer;
+	UniformBufferObject m_UBOSrc;
+
+
+	std::unique_ptr<GP2DescriptorPool> m_DescriptorPool;
 };

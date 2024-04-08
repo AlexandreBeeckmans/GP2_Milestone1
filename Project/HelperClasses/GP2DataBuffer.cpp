@@ -7,6 +7,20 @@ GP2DataBuffer::GP2DataBuffer(
 	VkDevice vkDevice,
 	VkBufferUsageFlags usage,
 	VkMemoryPropertyFlags properties,
+	VkDeviceSize size
+) :
+	m_VkDevice{ vkDevice },
+	m_Size{ size }
+{
+	CreateBuffer(size, usage, properties, m_VkBuffer, m_VkBufferMemory, vkDevice, vkPhysicalDevice);
+	//vkMapMemory(vkDevice, m_VkBufferMemory, 0, size, 0, &m_UniformBuffersMapped[i]);
+}
+
+GP2DataBuffer::GP2DataBuffer(
+	VkPhysicalDevice vkPhysicalDevice,
+	VkDevice vkDevice,
+	VkBufferUsageFlags usage,
+	VkMemoryPropertyFlags properties,
 	VkDeviceSize size,
 	const void* bufferData,
 	GP2CommandPool commandPool,
@@ -94,6 +108,7 @@ void GP2DataBuffer::CreateBuffer(const VkDeviceSize size, const VkBufferUsageFla
 	}
 
 	vkBindBufferMemory(vkDevice, buffer, bufferMemory, 0);
+	m_Size = size;
 }
 void GP2DataBuffer::CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuffer, const VkDeviceSize& size, const GP2CommandPool& commandPool, const VkDevice& vkDevice, const VkQueue& graphicsQueue)
 {

@@ -50,7 +50,7 @@ set(SOURCES
     "HelperClasses/GP2CircleMesh.h"
     "HelperClasses/GP2CircleMesh.cpp"
     "HelperClasses/GP2RectangleMesh.h"
-    "HelperClasses/GP2RectangleMesh.cpp" "HelperClasses/GP2RoundedRectangleMesh.h" "HelperClasses/GP2RoundedRectangleMesh.cpp" "HelperClasses/GP2DataBuffer.h" "HelperClasses/GP2DataBuffer.cpp")
+    "HelperClasses/GP2RectangleMesh.cpp" "HelperClasses/GP2RoundedRectangleMesh.h" "HelperClasses/GP2RoundedRectangleMesh.cpp" "HelperClasses/GP2DataBuffer.h" "HelperClasses/GP2DataBuffer.cpp" "HelperClasses/GP2DescriptorPool.cpp" "HelperClasses/GP2DescriptorPool.h")
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )

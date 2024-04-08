@@ -47,10 +47,12 @@ void VulkanBase::drawFrame() {
 	
 	m_CommandBuffer.Reset();
 	m_CommandBuffer.BeginRecording();
+
+	m_GradientShader.BindDescriptorSet(m_CommandBuffer.GetVkCommandBuffer(), pipelineLayout, 0);
 	drawFrame(m_CommandBuffer.GetVkCommandBuffer(), imageIndex);
 	m_CommandBuffer.EndRecording();
 
-	//m_Scene.UpdateUniformBuffers(m_CurrentFrame, swapChainExtent);
+	m_Scene.UpdateUniformBuffers(m_CurrentFrame, swapChainExtent);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

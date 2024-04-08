@@ -14,6 +14,13 @@ public:
 		VkDevice device,
 		VkBufferUsageFlags usage,
 		VkMemoryPropertyFlags properties,
+		VkDeviceSize size
+	);
+	GP2DataBuffer(
+		VkPhysicalDevice physicalDevice,
+		VkDevice device,
+		VkBufferUsageFlags usage,
+		VkMemoryPropertyFlags properties,
 		VkDeviceSize size,
 		const void* data,
 		GP2CommandPool commandPool,

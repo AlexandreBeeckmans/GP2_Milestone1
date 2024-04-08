@@ -103,7 +103,7 @@ void VulkanBase::createGraphicsPipeline(const VkDevice& vkDevice) {
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
 	//pipelineLayoutInfo.pushConstantRangeCount = 0;
-	pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
+	pipelineLayoutInfo.pSetLayouts = &m_GradientShader.GetDescriptorSetLayout();
 
 	if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
