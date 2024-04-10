@@ -164,8 +164,8 @@ private:
 
 	GP2Shader m_GradientShader
 	{
-		"shaders/shader.vert.spv",
-		"shaders/shader.frag.spv"
+		"shaders/3DShader.vert.spv",
+		"shaders/3DShader.frag.spv"
 	};;
 
 	void drawScene(const VkCommandBuffer& commandBuffer);
@@ -191,7 +191,6 @@ private:
 	
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 
-	//VkDescriptorSetLayout m_DescriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkRenderPass renderPass;
