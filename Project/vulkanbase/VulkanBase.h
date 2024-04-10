@@ -76,6 +76,7 @@ private:
 		createImageViews();
 
 		m_2DPipeline.Initialize(device, physicalDevice, swapChainImageFormat, swapChainImageViews, swapChainExtent, surface, graphicsQueue);
+		m_3DPipeline.Initialize(device, physicalDevice, swapChainImageFormat, swapChainImageViews, swapChainExtent, surface, graphicsQueue);
 
 		// week 06
 		createSyncObjects();
@@ -98,6 +99,7 @@ private:
 		vkDestroyFence(device, inFlightFence, nullptr);
 		
 		m_2DPipeline.Cleanup(device);
+		m_3DPipeline.Cleanup(device);
 
 		for (auto imageView : swapChainImageViews) {
 			vkDestroyImageView(device, imageView, nullptr);
@@ -199,5 +201,11 @@ private:
 	{ 
 		"shaders/shader.vert.spv", 
 		"shaders/shader.frag.spv" 
+	};
+
+	GP2Pipeline m_3DPipeline
+	{
+		"shaders/3DShader.vert.spv",
+		"shaders/3DShader.frag.spv"
 	};
 };

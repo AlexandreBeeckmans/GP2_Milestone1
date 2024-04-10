@@ -44,6 +44,7 @@ void VulkanBase::drawFrame() {
 	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
 	m_2DPipeline.Record(imageIndex, swapChainExtent);
+	m_3DPipeline.Record(imageIndex, swapChainExtent);
 
 
 	VkSubmitInfo submitInfo{};
@@ -56,6 +57,7 @@ void VulkanBase::drawFrame() {
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	m_2DPipeline.Submit(submitInfo);
+	m_3DPipeline.Submit(submitInfo);
 
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	submitInfo.signalSemaphoreCount = 1;

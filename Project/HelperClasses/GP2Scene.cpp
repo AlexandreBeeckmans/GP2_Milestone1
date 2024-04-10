@@ -3,6 +3,7 @@
 #include "vulkanbase/VulkanBase.h"
 #include "GP2CircleMesh.h"
 #include "GP2RoundedRectangleMesh.h"
+#include "GP2CubeMesh.h"
 
 GP2Scene::GP2Scene()
 {
@@ -12,6 +13,9 @@ GP2Scene::GP2Scene()
 	m_Meshes.push_back(std::move(rectangleMesh));
 	GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{0.25f, 0.65f}, 0.75f, 0.5f, 0.25f };
 	m_Meshes.push_back(std::move(roundedRectangleMesh));
+
+	GP2CubeMesh cubeMesh{ glm::vec2{-0.5f, -0.5f}, 0.65f, 0.45f };
+	m_Meshes.push_back(std::move(cubeMesh));
 }
 
 void GP2Scene::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
