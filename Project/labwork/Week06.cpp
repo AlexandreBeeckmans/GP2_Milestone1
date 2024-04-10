@@ -43,18 +43,8 @@ void VulkanBase::drawFrame() {
 	uint32_t imageIndex{};
 	vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
+	m_2DPipeline.Record(imageIndex, swapChainExtent);
 
-	
-	m_CommandBuffer.Reset();
-	m_CommandBuffer.BeginRecording();
-
-	m_GradientShader.BindDescriptorSet(m_CommandBuffer.GetVkCommandBuffer(), pipelineLayout, 0);
-	drawFrame(m_CommandBuffer.GetVkCommandBuffer(), imageIndex);
-	m_CommandBuffer.EndRecording();
-
-	m_GradientShader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f);
-
-	m_Scene.UpdateUniformBuffers(m_CurrentFrame, swapChainExtent);
 
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -65,7 +55,7 @@ void VulkanBase::drawFrame() {
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitStages;
 
-	m_CommandBuffer.Submit(submitInfo);
+	m_2DPipeline.Submit(submitInfo);
 
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	submitInfo.signalSemaphoreCount = 1;

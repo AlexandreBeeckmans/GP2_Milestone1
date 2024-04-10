@@ -23,6 +23,7 @@
 #include "HelperClasses/Vertex.h"
 
 #include "HelperClasses/GP2Scene.h"
+#include <HelperClasses/GP2Pipeline.h>
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -73,23 +74,8 @@ private:
 		// week 04 
 		createSwapChain();
 		createImageViews();
-		
-		// week 03
-		m_GradientShader.Initialize(device, physicalDevice);
 
-		createRenderPass();
-
-		m_GradientShader.CreateDescriptorSetLayout(device);
-		m_GradientShader.CreateDescriptorSets(device);
-
-		createGraphicsPipeline(device);
-		createFrameBuffers();
-		// week 02
-		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
-
-		m_Scene.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue);
-
-		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
+		m_2DPipeline.Initialize(device, physicalDevice, swapChainImageFormat, swapChainImageViews, swapChainExtent, surface, graphicsQueue);
 
 		// week 06
 		createSyncObjects();
@@ -106,25 +92,12 @@ private:
 
 	void cleanup() 
 	{
-		m_Scene.Cleanup(device);
 
 		vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 		vkDestroyFence(device, inFlightFence, nullptr);
-
 		
-		for (auto framebuffer : swapChainFramebuffers) {
-			vkDestroyFramebuffer(device, framebuffer, nullptr);
-		}
-
-		m_GradientShader.DestroyUniformBuffer(device);
-		vkDestroyDescriptorSetLayout(device, m_GradientShader.GetDescriptorSetLayout(), nullptr);
-
-		vkDestroyPipeline(device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-		vkDestroyRenderPass(device, renderPass, nullptr);
-
-		m_CommandPool.Destroy();
+		m_2DPipeline.Cleanup(device);
 
 		for (auto imageView : swapChainImageViews) {
 			vkDestroyImageView(device, imageView, nullptr);
@@ -162,42 +135,11 @@ private:
 	GLFWwindow* window;
 	void initWindow();
 
-	GP2Shader m_GradientShader
-	{
-		"shaders/3DShader.vert.spv",
-		"shaders/3DShader.frag.spv"
-	};;
-
-	void drawScene(const VkCommandBuffer& commandBuffer);
-
 	// Week 02
 	// Queue families
 	// CommandBuffer concept
-
-	GP2CommandPool m_CommandPool{};
-	GP2CommandBuffer m_CommandBuffer{};
-	
-	GP2Scene m_Scene{};
-
-
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-	void drawFrame(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	
-
-
-	// Week 03
-	// Renderpass concept
-	// Graphics pipeline
-	
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
-	VkRenderPass renderPass;
-
-	void createFrameBuffers();
-	void createRenderPass();
-	void createGraphicsPipeline(const VkDevice& vkDevice);
 
 	// Week 04
 	// Swap chain and image view support
@@ -253,4 +195,9 @@ private:
 		return VK_FALSE;
 	}
 	uint32_t m_CurrentFrame = 0;
+	GP2Pipeline m_2DPipeline
+	{ 
+		"shaders/shader.vert.spv", 
+		"shaders/shader.frag.spv" 
+	};
 };
