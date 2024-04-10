@@ -77,7 +77,6 @@ private:
 		// week 03
 		m_GradientShader.Initialize(device, physicalDevice);
 
-
 		createRenderPass();
 
 		m_GradientShader.CreateDescriptorSetLayout(device);

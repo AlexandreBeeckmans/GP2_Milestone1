@@ -52,6 +52,8 @@ void VulkanBase::drawFrame() {
 	drawFrame(m_CommandBuffer.GetVkCommandBuffer(), imageIndex);
 	m_CommandBuffer.EndRecording();
 
+	m_GradientShader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f);
+
 	m_Scene.UpdateUniformBuffers(m_CurrentFrame, swapChainExtent);
 
 	VkSubmitInfo submitInfo{};

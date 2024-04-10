@@ -3,6 +3,7 @@
 #include "vulkan/vulkan_core.h"
 
 #include "GP2CommandPool.h"
+#include "Vertex.h"
 
 class GP2DataBuffer
 {
@@ -51,6 +52,8 @@ public:
 	};
 
 	void CreateBuffer(const VkDeviceSize size, const VkBufferUsageFlags& usage, const VkMemoryPropertyFlags& properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
+	void Upload(UniformBufferObject& ubo);
+	void Map(const VkDevice& device);
 
 private:
 	uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
@@ -59,6 +62,8 @@ private:
 
 	VkBuffer m_VkBuffer;
 	VkDeviceMemory m_VkBufferMemory;
+
+	void* m_UniformBufferMapped;
 
 
 	

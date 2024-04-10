@@ -37,3 +37,4 @@ void GP2CommandBuffer::Submit(VkSubmitInfo& info) const
 	info.commandBufferCount = 1;
 	info.pCommandBuffers = &m_CommandBuffer;
 }
+

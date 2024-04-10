@@ -1,6 +1,13 @@
 #include "GP2Shader.h"
 #include <vulkanbase/VulkanUtil.h>
 
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <chrono>
+
+
 #include "HelperClasses/Vertex.h"
 
 GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile):
@@ -23,6 +30,7 @@ void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkP
 		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 		sizeof(UniformBufferObject));
+	m_UBOBuffer->Map(vkDevice);
 
 	m_DescriptorPool = std::make_unique<GP2DescriptorPool>(vkDevice, 0, 1);
 }
@@ -125,4 +133,19 @@ void GP2Shader::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 void GP2Shader::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index)
 {
 	m_DescriptorPool->BindDescriptorSet(buffer, layout, index);
+}
+
+void GP2Shader::UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov)
+{
+	static auto startTime = std::chrono::high_resolution_clock::now();
+
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+	m_UBOSrc.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_UBOSrc.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_UBOSrc.proj = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 10.0f);
+	m_UBOSrc.proj[1].y *= -1;
+
+	m_UBOBuffer->Upload(m_UBOSrc);
 }

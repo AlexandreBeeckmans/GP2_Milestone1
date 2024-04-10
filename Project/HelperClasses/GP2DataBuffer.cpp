@@ -141,3 +141,13 @@ void GP2DataBuffer::CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuf
 
 	vkFreeCommandBuffers(vkDevice, commandPool.GetVkCommandPool(), 1, commandBuffer.GetpVkCommandBuffer());
 }
+
+void GP2DataBuffer::Upload(UniformBufferObject& ubo)
+{
+	memcpy(m_UniformBufferMapped, &ubo, m_Size);
+}
+
+void GP2DataBuffer::Map(const VkDevice& device)
+{
+	vkMapMemory(device, m_VkBufferMemory, 0, m_Size, 0, &m_UniformBufferMapped);
+}

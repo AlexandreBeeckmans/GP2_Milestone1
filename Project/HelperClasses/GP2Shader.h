@@ -42,6 +42,7 @@ public:
 		return m_DescriptorSetLayout;
 	}
 	void BindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, size_t index);
+	void UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov);
 
 private:
 
