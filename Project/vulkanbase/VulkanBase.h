@@ -75,8 +75,13 @@ private:
 		createSwapChain();
 		createImageViews();
 
-		m_2DPipeline.Initialize(device, physicalDevice, swapChainImageFormat, swapChainImageViews, swapChainExtent, surface, graphicsQueue);
-		m_3DPipeline.Initialize(device, physicalDevice, swapChainImageFormat, swapChainImageViews, swapChainExtent, surface, graphicsQueue);
+		CreateRenderPass();
+		CreateFrameBuffers();
+		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
+		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
+
+		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
+		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 		// week 06
 		createSyncObjects();
@@ -94,12 +99,20 @@ private:
 	void cleanup() 
 	{
 
+		
+
 		vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 		vkDestroyFence(device, inFlightFence, nullptr);
 		
 		m_2DPipeline.Cleanup(device);
 		m_3DPipeline.Cleanup(device);
+
+		for (auto framebuffer : m_SwapChainFramebuffers) {
+			vkDestroyFramebuffer(device, framebuffer, nullptr);
+		}
+		vkDestroyRenderPass(device, m_RenderPass, nullptr);
+		m_CommandPool.Destroy();
 
 		for (auto imageView : swapChainImageViews) {
 			vkDestroyImageView(device, imageView, nullptr);
@@ -141,7 +154,12 @@ private:
 	// Queue families
 	// CommandBuffer concept
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-	
+
+	void CreateRenderPass();
+	void BeginRenderPass(const GP2CommandBuffer& buffer, VkFramebuffer currentBuffer, VkExtent2D extent);
+	void EndRenderPass(const GP2CommandBuffer& buffer);
+	void CreateFrameBuffers();
+
 
 	// Week 04
 	// Swap chain and image view support
@@ -150,6 +168,7 @@ private:
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
 	std::vector<VkImageView> swapChainImageViews;
 
@@ -208,4 +227,8 @@ private:
 		"shaders/3DShader.vert.spv",
 		"shaders/3DShader.frag.spv"
 	};
+
+	VkRenderPass m_RenderPass{};
+	GP2CommandPool m_CommandPool{};
+	GP2CommandBuffer m_CommandBuffer{};
 };
