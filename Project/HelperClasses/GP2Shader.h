@@ -59,7 +59,7 @@ private:
 	//Week 2
 	VkPipelineVertexInputStateCreateInfo m_VertexInputInfo{};
 	VkVertexInputBindingDescription m_BindingDescription{};
-	std::array<VkVertexInputAttributeDescription, 2> m_AttributeDescription{};
+	std::array<VkVertexInputAttributeDescription, 3> m_AttributeDescription{};
 
 
 	//UBO

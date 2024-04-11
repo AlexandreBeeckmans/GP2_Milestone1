@@ -82,7 +82,8 @@ GP23DMesh::GP23DMesh() :
 
 	for(const Vertex& vertex : vertices)
 	{
-		AddVertex(vertex.pos, glm::vec3{ float(1 - value),0.5f,float(value)});
+		//AddVertex(vertex.pos, glm::vec3{ static_cast<float>(1 - value),0.5f,float(value)});
+		AddVertex(vertex.pos, glm::vec3{ 1.0f,0.5f,0 });
 		++value %= 3;
 	}
 
