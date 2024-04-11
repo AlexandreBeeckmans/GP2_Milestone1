@@ -1,7 +1,5 @@
 #include "GP23DMesh.h"
 
-#include <random>
-
 #include "OBJLoader.h"
 
 GP23DMesh::GP23DMesh() :
@@ -13,85 +11,79 @@ GP23DMesh::GP23DMesh() :
 
 	ParseOBJ(m_filePath, vertices, indices);
 
-	//Temporary, just to get some result
-	float minX{FLT_MAX};
-	float maxX{FLT_MIN};
-	float minY{ FLT_MAX };
-	float maxY{ FLT_MIN };
-	float minZ{ FLT_MAX };
-	float maxZ{ FLT_MIN };
+
+
+	//for the moment clamp values between -1 and 1
+	float min{ FLT_MAX };
+	float max{ FLT_MIN };
 
 	for (const Vertex& vertex : vertices)
 	{
 		//get min x
-		if(vertex.pos.x < minX)
+		if(vertex.pos.x < min)
 		{
-			minX = vertex.pos.x;
+			min = vertex.pos.x;
 		}
 
 		//get max x
-		if (vertex.pos.x > maxX)
+		if (vertex.pos.x > max)
 		{
-			maxX = vertex.pos.x;
+			max = vertex.pos.x;
 		}
 
 		//get min y
-		if (vertex.pos.x < minY)
+		if (vertex.pos.x < min)
 		{
-			minY = vertex.pos.y;
+			min = vertex.pos.y;
 		}
 
 		//get max Y
-		if (vertex.pos.x > maxY)
+		if (vertex.pos.x > max)
 		{
-			maxY = vertex.pos.y;
+			max = vertex.pos.y;
 		}
 
 		//get min z
-		if (vertex.pos.z < minZ)
+		if (vertex.pos.z < min)
 		{
-			minZ = vertex.pos.z;
+			min = vertex.pos.z;
 		}
 
 		//get max z
-		if (vertex.pos.z > maxZ)
+		if (vertex.pos.z > max)
 		{
-			maxZ = vertex.pos.x;
+			max = vertex.pos.x;
 		}
 	}
 
-	const float xTotalDifference{ maxX - minX };
-	const float yTotalDifference{ maxY - minY };
-	const float zTotalDifference{ maxZ - minZ };
+	const float totalDifference{ max - min };
 	for (Vertex& vertex : vertices)
 	{
 		//clamp all x values between -1 and 1
-		const float xDifference{ maxX - vertex.pos.x };
-		vertex.pos.x = 2 * (1 - (xDifference / xTotalDifference)) - 1;
+		const float xDifference{ max - vertex.pos.x };
+		vertex.pos.x = 2 * (1 - (xDifference / totalDifference)) - 1;
 
 
 
 		//clamp all y values between -1 and 1
-		const float yDifference{ maxY - vertex.pos.y };
-		vertex.pos.y = 2 * (1 - (yDifference / yTotalDifference)) - 1;
+		const float yDifference{ max - vertex.pos.y };
+		vertex.pos.y = 2 * (1 - (yDifference / totalDifference)) - 1;
 
 		//clamp all z values between -1 and 1
-		const float zDifference{ maxZ - vertex.pos.z };
-		vertex.pos.z = 2 * (1 - (zDifference / zTotalDifference)) - 1;
+		const float zDifference{ max - vertex.pos.z };
+		vertex.pos.z = 2 * (1 - (zDifference / totalDifference)) - 1;
 	}
 	
 	
 	
 
-	std::default_random_engine gen;
-	std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+
+	int value{ 0 };
 
 	for(const Vertex& vertex : vertices)
 	{
-		const float randR{ distribution(gen) };
-		const float randG{ distribution(gen) };
-		const float randB{ distribution(gen) };
-		AddVertex(vertex.pos, glm::vec3{ randR,randG,randB });
+		AddVertex(vertex.pos, glm::vec3{ float(1 - value),0.5f,float(value)});
+		++value %= 3;
 	}
 
 	for(const uint32_t& index: indices)
