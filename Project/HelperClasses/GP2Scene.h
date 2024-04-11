@@ -4,7 +4,7 @@
 #include "GP2Mesh.h"
 
 
-class GP2Scene final
+class GP2Scene
 {
 public:
 	GP2Scene();
@@ -14,6 +14,8 @@ public:
 	void Cleanup(const VkDevice& vkDevice);
 
 	void Draw(const VkCommandBuffer& vkCommandBuffer);
+
+	void AddMesh(GP2Mesh& mesh);
 
 private:
 	std::vector<GP2Mesh> m_Meshes{};

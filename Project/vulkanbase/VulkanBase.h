@@ -25,6 +25,12 @@
 #include "HelperClasses/GP2Scene.h"
 #include <HelperClasses/GP2Pipeline.h>
 
+#include "HelperClasses/GP23DMesh.h"
+#include "HelperClasses/GP2CircleMesh.h"
+#include "HelperClasses/GP2RoundedRectangleMesh.h"
+#include "HelperClasses/GP2Scene2D.h"
+#include "HelperClasses/GP2Scene3D.h"
+
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
@@ -61,7 +67,22 @@ public:
 	}
 
 private:
-	void initVulkan() {
+	void initVulkan()
+	{
+
+
+		GP2CircleMesh circleMesh{ glm::vec2{0.25f, -0.5f}, 0.35f, 0.25f, 32 };
+		m_2DScene.AddMesh(circleMesh);
+		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.5f, -0.5f}, 0.65f, 0.45f };
+		m_2DScene.AddMesh(rectangleMesh);
+		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{0.25f, 0.65f}, 0.75f, 0.5f, 0.25f };
+		m_2DScene.AddMesh(roundedRectangleMesh);
+
+		/*GP2CubeMesh cubeMesh{ glm::vec2{-0.5f, -0.5f}, 0.65f, 0.45f };
+		m_Meshes.push_back(std::move(cubeMesh));*/
+		GP23DMesh loadedMesh{};
+		m_3DScene.AddMesh(loadedMesh);
+
 		// week 06
 		createInstance();
 		setupDebugMessenger();
@@ -216,16 +237,23 @@ private:
 		return VK_FALSE;
 	}
 	uint32_t m_CurrentFrame = 0;
+
+
+	GP2Scene m_2DScene{};
+	GP2Scene m_3DScene{};
+
 	GP2Pipeline m_2DPipeline
-	{ 
-		"shaders/shader.vert.spv", 
-		"shaders/shader.frag.spv" 
+	{
+		"shaders/shader.vert.spv",
+		"shaders/shader.frag.spv",
+		&m_2DScene
 	};
 
 	GP2Pipeline m_3DPipeline
 	{
 		"shaders/3DShader.vert.spv",
-		"shaders/3DShader.frag.spv"
+		"shaders/3DShader.frag.spv",
+		&m_3DScene
 	};
 
 	VkRenderPass m_RenderPass{};

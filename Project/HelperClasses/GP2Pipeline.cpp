@@ -1,11 +1,11 @@
 #include "GP2Pipeline.h"
 #include<vulkanbase/VulkanBase.h>
 
-GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath):
+GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath, GP2Scene* pScene):
 	m_Pipeline{},
 	m_Shader{ vertexShaderPath, fragmentShaderPath },
 	m_Buffer{},
-	m_Scene{},
+	m_pScene{pScene},
 	m_PipelineLayout{}
 {
 
@@ -20,12 +20,12 @@ void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& v
 
 	CreateGraphicsPipeline(vkDevice, renderPass);
 
-	m_Scene.Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
+	m_pScene->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
 	m_Buffer = pCommandBuffer;
 }
 void GP2Pipeline::Cleanup(const VkDevice& vkDevice)
 {
-	m_Scene.Cleanup(vkDevice);
+	m_pScene->Cleanup(vkDevice);
 
 	
 
@@ -155,5 +155,5 @@ void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExte
 }
 void GP2Pipeline::DrawScene()
 {
-	m_Scene.Draw(m_Buffer->GetVkCommandBuffer());
+	m_pScene->Draw(m_Buffer->GetVkCommandBuffer());
 }

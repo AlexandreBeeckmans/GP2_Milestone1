@@ -10,10 +10,6 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include <chrono>
 
-GP2Mesh::GP2Mesh()
-{
-}
-
 void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
 {
 	VkDeviceSize vertexBufferSize{ sizeof(m_Vertices[0]) * m_Vertices.size() };

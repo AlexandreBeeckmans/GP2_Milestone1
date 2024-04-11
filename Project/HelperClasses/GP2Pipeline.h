@@ -6,7 +6,7 @@
 class GP2Pipeline
 {
 public:
-	GP2Pipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+	GP2Pipeline(const std::string& vertexShaderPath, const std::string& fragmentShaderPath, GP2Scene* pScene);
 	~GP2Pipeline() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue&
@@ -26,7 +26,7 @@ private:
 	VkPipeline m_Pipeline;
 	GP2Shader m_Shader;
 	GP2CommandBuffer* m_Buffer;
-	GP2Scene m_Scene;
+	GP2Scene* m_pScene;
 
 	VkPipelineLayout m_PipelineLayout;
 };

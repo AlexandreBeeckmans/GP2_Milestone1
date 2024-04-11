@@ -96,36 +96,4 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec2& center, const float width, const float
 	AddIndex(20);
 	AddIndex(22);
 	AddIndex(23);
-
-
-
-	/*const int baseIndex{ 0 };
-	AddVertex({-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f});
-	AddVertex({0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f});
-	AddVertex({0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f});
-	AddVertex({-0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f});
-
-	AddVertex({-0.255f, -0.75f, 0.5f}, {0.0f, 0.0f, 1.0f});
-	AddVertex({0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f});
-	AddVertex({0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f});
-	AddVertex({-0.35f, 0.35f, 0.5f}, {0.0f, 1.0f, 0.0f});
-
-	AddIndex(baseIndex + 2);
-	AddIndex(baseIndex + 1);
-	AddIndex(baseIndex + 0);
-	AddIndex(baseIndex + 0);
-	AddIndex(baseIndex + 3);
-	AddIndex(baseIndex + 2);
-
-	AddIndex(baseIndex + 0);
-	AddIndex(baseIndex + 7);
-	AddIndex(baseIndex + 4);
-
-
-	AddIndex(baseIndex + 6);
-	AddIndex(baseIndex + 5);
-	AddIndex(baseIndex + 4);
-	AddIndex(baseIndex + 4);
-	AddIndex(baseIndex + 7);
-	AddIndex(baseIndex + 6);*/
 }

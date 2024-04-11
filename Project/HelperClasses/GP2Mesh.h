@@ -15,7 +15,7 @@ class GP2Mesh
 {
 public:
 
-	GP2Mesh();
+	GP2Mesh() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
 	void Destroy(const VkDevice& vkDevice);
