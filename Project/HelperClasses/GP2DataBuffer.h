@@ -55,8 +55,10 @@ public:
 	void Upload(UniformBufferObject& ubo);
 	void Map(const VkDevice& device);
 
+
+	static uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
 private:
-	uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
+	
 	VkDevice m_VkDevice;
 	VkDeviceSize m_Size;
 

@@ -38,14 +38,9 @@ void GP2Pipeline::Cleanup(const VkDevice& vkDevice)
 
 void GP2Pipeline::Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent)
 {
-	
-
 
 	m_Shader.BindDescriptorSet(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, 0);
 	DrawFrame(imageIndex, swapChainExtent);
-
-
-	
 
 	m_Shader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f);
 }
@@ -106,6 +101,20 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
+
+	VkPipelineDepthStencilStateCreateInfo depthStencil{};
+	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	depthStencil.depthTestEnable = VK_TRUE;
+	depthStencil.depthWriteEnable = VK_TRUE;
+	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+	depthStencil.depthBoundsTestEnable = VK_FALSE;
+	depthStencil.minDepthBounds = 0.0f;
+	depthStencil.maxDepthBounds = 1.0f;
+	depthStencil.stencilTestEnable = VK_FALSE;
+	depthStencil.front = {};
+	depthStencil.back = {};
+
+
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -120,6 +129,7 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
+	pipelineInfo.pDepthStencilState = &depthStencil;
 	pipelineInfo.layout = m_PipelineLayout;
 	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;

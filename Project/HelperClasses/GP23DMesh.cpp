@@ -91,10 +91,4 @@ GP23DMesh::GP23DMesh() :
 	{
 		AddIndex(static_cast<uint16_t>(index));
 	}
-
-	//add index in reverse order
-	/*for(int i{0}; i < indices.size(); ++i)
-	{
-		AddIndex(static_cast<uint16_t>(indices[indices.size() - 1 - i]));
-	}*/
 }
