@@ -27,6 +27,7 @@
 
 #include "HelperClasses/GP23DMesh.h"
 #include "HelperClasses/GP2CircleMesh.h"
+#include "HelperClasses/GP2CubeMesh.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
 #include "HelperClasses/GP2Scene2D.h"
 #include "HelperClasses/GP2Scene3D.h"
@@ -78,8 +79,8 @@ private:
 		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{0.25f, 0.65f}, 0.75f, 0.5f, 0.25f };
 		m_2DScene.AddMesh(roundedRectangleMesh);
 
-		/*GP2CubeMesh cubeMesh{ glm::vec2{-0.5f, -0.5f}, 0.65f, 0.45f };
-		m_Meshes.push_back(std::move(cubeMesh));*/
+		GP2CubeMesh cubeMesh{ glm::vec3{-0.5f, -0.5f, -1.0f}, 0.25f, 0.25f };
+		m_3DScene.AddMesh(cubeMesh);
 		GP23DMesh loadedMesh{};
 		m_3DScene.AddMesh(loadedMesh);
 
