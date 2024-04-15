@@ -39,7 +39,7 @@ void GP2Camera::Update()
 
 	//Camera Update Logic
 
-	constexpr float cameraSpeed{ 5.0f };
+	constexpr float cameraSpeed{ 25.0f };
 	constexpr float rotationSpeed{ 5.0f };
 
 
@@ -48,7 +48,6 @@ void GP2Camera::Update()
 	translateMatrix = MatrixCreateTranslation({ 1, 1, 1 });
 
 	glm::vec3 directionVector{ ManageTranslateInput() };
-	//if (pKeyboardState[SDL_SCANCODE_LSHIFT]) directionVector *= m_Boost;
 
 	m_Origin += directionVector * cameraSpeed * deltaTime;
 
@@ -70,15 +69,15 @@ void GP2Camera::Update()
 	//		}
 
 	//		//applyRotation 
-	//		const Matrix rotationMatrix{ Matrix::CreateRotation(m_TotalPitch, m_TotalYaw, 0) };
-	//		m_Forward = rotationMatrix.TransformVector(Vector3::UnitZ) * deltaTime * rotationSpeed;
-	//		m_Forward.Normalize();
+		const glm::mat4 rotationMatrix{ MatrixCreateRotation(m_TotalPitch, m_TotalYaw, 0) };
+		m_Forward = MatrixTransformVector(rotationMatrix, 0,0,1) * deltaTime * rotationSpeed;
+		m_Forward = glm::normalize(m_Forward);
 
-	//		m_Right = Vector3::Cross(Vector3::UnitY, m_Forward);
-	//		m_Right.Normalize();
+		m_Right = glm::cross({ 0,1,0 }, m_Forward);
+		m_Right = glm::normalize(m_Right);
 
-	//		m_Up = Vector3::Cross(m_Forward, m_Right);
-	//		m_Up.Normalize();
+		m_Up = glm::cross(m_Forward, m_Right);
+		m_Up = glm::normalize(m_Up);
 	//	}
 	//}
 
@@ -104,6 +103,7 @@ glm::mat4 GP2Camera::GetViewMatrix() const
 };
 glm::mat4 GP2Camera::GetProjectionMatrix() const
 {
+	//return MatrixInverse(m_ProjectionMatrix);
 	return m_ProjectionMatrix;
 }
 
@@ -164,7 +164,6 @@ glm::mat4 GP2Camera::MatrixCreateTranslation(const glm::vec3& t) const
 		{t,1}
 	};
 }
-
 glm::mat4 GP2Camera::MatrixCreateRotation(const float pitch, const float yaw, const float roll) const
 {
 	const glm::mat4 rotationX
@@ -193,7 +192,7 @@ glm::mat4 GP2Camera::MatrixCreateRotation(const float pitch, const float yaw, co
 
 	return rotationX * rotationY * rotationZ;
 }
-glm::mat4 GP2Camera::MatrixInverse(const glm::mat4& mat)
+glm::mat4 GP2Camera::MatrixInverse(const glm::mat4& mat) const
 {
 	//Optimized Inverse as explained in FGED1 - used widely in other libraries too.
 	const glm::vec3& a = mat[0];

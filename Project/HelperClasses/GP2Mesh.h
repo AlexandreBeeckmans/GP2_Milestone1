@@ -22,8 +22,8 @@ public:
 
 	void Draw(VkCommandBuffer commandBuffer) const;
 	
-	void AddVertex(glm::vec2 pos, glm::vec3 color);
-	void AddVertex(glm::vec3 pos, glm::vec3 color);
+	void AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 });
+	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0});
 	void AddIndex(const uint16_t value);
 
 protected:

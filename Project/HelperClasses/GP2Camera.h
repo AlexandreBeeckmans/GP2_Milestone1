@@ -67,7 +67,7 @@ private:
 
 	glm::mat4 MatrixCreateTranslation(const glm::vec3& t) const;
 	glm::mat4 MatrixCreateRotation(const float pitch, const float yaw, const float roll) const;
-	glm::mat4 MatrixInverse(const glm::mat4& mat);
+	glm::mat4 MatrixInverse(const glm::mat4& mat) const;
 	glm::mat4 MatrixCreatePerspectiveFovLH(float fov, float aspect, float zn, float zf) const;
 	glm::vec3 MatrixTransformVector(const glm::mat4& mat, float x, float y, float z) const;
 };

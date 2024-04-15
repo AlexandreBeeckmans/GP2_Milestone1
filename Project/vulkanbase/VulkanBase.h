@@ -82,7 +82,7 @@ private:
 		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{0.25f, 0.65f}, 0.75f, 0.5f, 0.25f };
 		m_2DScene.AddMesh(roundedRectangleMesh);
 
-		GP2CubeMesh cubeMesh{ glm::vec3{-0.5f, -0.5f, -1.0f}, 0.25f, 0.25f };
+		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
 		m_3DScene.AddMesh(cubeMesh);
 		GP23DMesh loadedMesh{};
 		m_3DScene.AddMesh(loadedMesh);
@@ -389,5 +389,5 @@ private:
 		m_DepthImageView = CreateImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
-	GP2Camera m_Camera{ {0,0,-10}, 45, 0, 0 };
+	GP2Camera m_Camera{ {0,0,-10}, 45, WIDTH, HEIGHT };
 };

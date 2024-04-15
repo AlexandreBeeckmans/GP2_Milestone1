@@ -32,13 +32,13 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer) const
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 }
 
-void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color)
+void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal)
 {
-	AddVertex({ pos.x, pos.y, 0 }, color);
+	AddVertex({ pos.x, pos.y, 0 }, color, normal);
 }
-void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color)
+void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal)
 {
-	m_Vertices.push_back({ pos, color });
+	m_Vertices.emplace_back(Vertex{ pos, color, normal });
 }
 void GP2Mesh::AddIndex(const uint16_t value)
 {
