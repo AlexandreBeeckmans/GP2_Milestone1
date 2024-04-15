@@ -4,6 +4,7 @@
 //#include <SDL_mouse.h>
 
 #include <glm/glm.hpp>
+#include <chrono>
 
 constexpr float PI{ 3.14159265f };
 constexpr float TO_RADIANS{ PI / 180.0f };
@@ -47,11 +48,11 @@ private:
 	float m_NearPlane{ 0.1f };
 	float m_FarPlane{ 1000.0f };
 
-	float m_Speed{};
-	float m_Boost{};
-
 	bool m_IsMoving{ true };
 	glm::vec2 m_MoveDirection{};
+
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_PreviousTime{};
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_CurrentTime{};
 
 
 	//Helpers functions

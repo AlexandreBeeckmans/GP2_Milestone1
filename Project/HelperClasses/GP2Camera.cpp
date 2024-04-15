@@ -13,10 +13,11 @@ GP2Camera::GP2Camera()
 GP2Camera::GP2Camera(const glm::vec3& _origin, const float _fovAngle, const float width, const float height) :
 	m_Origin{ _origin },
 	m_FovAngle{ _fovAngle },
-	m_AspectRatio{ width / height },
-	m_Speed{ 0.25f },
-	m_Boost{ 5 }
+	m_AspectRatio{ width / height }
+
+
 {
+	m_PreviousTime = std::chrono::high_resolution_clock::now();
 	Initialize();
 }
 
@@ -30,15 +31,16 @@ void GP2Camera::Initialize()
 
 void GP2Camera::Update()
 {
-	static auto startTime = std::chrono::high_resolution_clock::now();
+	//static auto startTime = std::chrono::high_resolution_clock::now();
 
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+	m_CurrentTime = std::chrono::high_resolution_clock::now();
+	float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(m_CurrentTime - m_PreviousTime).count();
+	m_PreviousTime = m_CurrentTime;
 
 	//Camera Update Logic
 
-	const float cameraSpeed{ 0.0005f };
-	const float rotationSpeed{ 5.0f };
+	constexpr float cameraSpeed{ 5.0f };
+	constexpr float rotationSpeed{ 5.0f };
 
 
 	//Translate camera
