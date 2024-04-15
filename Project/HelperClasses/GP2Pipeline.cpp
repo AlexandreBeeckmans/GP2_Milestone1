@@ -36,13 +36,13 @@ void GP2Pipeline::Cleanup(const VkDevice& vkDevice)
 	vkDestroyPipelineLayout(vkDevice, m_PipelineLayout, nullptr);
 }
 
-void GP2Pipeline::Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent)
+void GP2Pipeline::Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera)
 {
 
 	m_Shader.BindDescriptorSet(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, 0);
 	DrawFrame(imageIndex, swapChainExtent);
 
-	m_Shader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f);
+	m_Shader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f, camera);
 }
 
 void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass)

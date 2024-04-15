@@ -3,6 +3,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
+
+
 #include "VulkanUtil.h"
 
 #include <iostream>
@@ -26,6 +28,7 @@
 #include <HelperClasses/GP2Pipeline.h>
 
 #include "HelperClasses/GP23DMesh.h"
+#include "HelperClasses/GP2Camera.h"
 #include "HelperClasses/GP2CircleMesh.h"
 #include "HelperClasses/GP2CubeMesh.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
@@ -115,6 +118,8 @@ private:
 	void mainLoop() {
 		while (!glfwWindowShouldClose(window)) {
 			glfwPollEvents();
+
+			m_Camera.Update();
 			// week 06
 			drawFrame();
 		}
@@ -176,6 +181,7 @@ private:
 
 	GLFWwindow* window;
 	void initWindow();
+	void KeyEvent(int key, int scancode, int action, int mods);
 
 	// Week 02
 	// Queue families
@@ -382,4 +388,6 @@ private:
 
 		m_DepthImageView = CreateImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
+
+	GP2Camera m_Camera{ {0,0,-10}, 45, 0, 0 };
 };

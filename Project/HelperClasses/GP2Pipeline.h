@@ -2,6 +2,7 @@
 #include <vulkan/vulkan_core.h>
 #include "GP2Shader.h"
 #include "GP2Scene.h"
+#include "GP2Camera.h"
 
 class GP2Pipeline
 {
@@ -14,7 +15,7 @@ public:
 	void Cleanup(const VkDevice& vkDevice);
 
 
-	void Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent);
+	void Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera);
 
 private:
 

@@ -6,6 +6,7 @@
 #include <array>
 #include <memory>
 
+#include "GP2Camera.h"
 #include "GP2DataBuffer.h"
 #include "Vertex.h"
 
@@ -42,7 +43,7 @@ public:
 		return m_DescriptorSetLayout;
 	}
 	void BindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, size_t index);
-	void UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov);
+	void UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov, const GP2Camera& camera);
 
 private:
 
