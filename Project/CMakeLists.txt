@@ -23,6 +23,8 @@ add_custom_target(
     DEPENDS ${SPIRV_BINARY_FILES}
 )
 
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
 
 set(SOURCES
     "main.cpp"
@@ -50,7 +52,26 @@ set(SOURCES
     "HelperClasses/GP2CircleMesh.h"
     "HelperClasses/GP2CircleMesh.cpp"
     "HelperClasses/GP2RectangleMesh.h"
-    "HelperClasses/GP2RectangleMesh.cpp" "HelperClasses/GP2RoundedRectangleMesh.h" "HelperClasses/GP2RoundedRectangleMesh.cpp" "HelperClasses/GP2DataBuffer.h" "HelperClasses/GP2DataBuffer.cpp" "HelperClasses/GP2DescriptorPool.cpp" "HelperClasses/GP2DescriptorPool.h" "HelperClasses/GP2Pipeline.cpp" "HelperClasses/GP2Pipeline.h" "HelperClasses/GP2CubeMesh.h" "HelperClasses/GP2CubeMesh.cpp" "HelperClasses/OBJLoader.h" "HelperClasses/GP23DMesh.h" "HelperClasses/GP23DMesh.cpp" "HelperClasses/GP2Scene2D.cpp" "HelperClasses/GP2Scene2D.h" "HelperClasses/GP2Scene3D.h" "HelperClasses/GP2Scene3D.cpp" "HelperClasses/GP2Camera.cpp" "HelperClasses/GP2Camera.h")
+    "HelperClasses/GP2RectangleMesh.cpp"
+    "HelperClasses/GP2RoundedRectangleMesh.h"
+    "HelperClasses/GP2RoundedRectangleMesh.cpp"
+    "HelperClasses/GP2DataBuffer.h"
+    "HelperClasses/GP2DataBuffer.cpp"
+    "HelperClasses/GP2DescriptorPool.cpp"
+    "HelperClasses/GP2DescriptorPool.h"
+    "HelperClasses/GP2Pipeline.cpp"
+    "HelperClasses/GP2Pipeline.h"
+    "HelperClasses/GP2CubeMesh.h"
+    "HelperClasses/GP2CubeMesh.cpp"
+    "HelperClasses/OBJLoader.h"
+    "HelperClasses/GP23DMesh.h"
+    "HelperClasses/GP23DMesh.cpp"
+    "HelperClasses/GP2Scene2D.cpp" 
+    "HelperClasses/GP2Scene2D.h"
+    "HelperClasses/GP2Scene3D.h"
+    "HelperClasses/GP2Scene3D.cpp"
+    "HelperClasses/GP2Camera.cpp"
+    "HelperClasses/GP2Camera.h")
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )

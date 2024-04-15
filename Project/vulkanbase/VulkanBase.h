@@ -389,5 +389,5 @@ private:
 		m_DepthImageView = CreateImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
-	GP2Camera m_Camera{ {0,0,-10}, 45, WIDTH, HEIGHT };
+	GP2Camera m_Camera{ {0,0,-10}, 30, WIDTH, HEIGHT };
 };

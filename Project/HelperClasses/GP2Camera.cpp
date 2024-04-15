@@ -4,6 +4,8 @@
 
 #include <chrono>
 
+#include "glm/ext/matrix_clip_space.hpp"
+
 
 GP2Camera::GP2Camera()
 {
@@ -86,6 +88,7 @@ void GP2Camera::Update()
 	if (m_IsMoving)
 	{
 		CalculateViewMatrix();
+		CalculateProjectionMatrix();
 		CalculateViewProjectionMatrix();
 
 		m_IsMoving = true;
@@ -130,7 +133,8 @@ void GP2Camera::CalculateViewMatrix()
 }
 void GP2Camera::CalculateProjectionMatrix()
 {
-	m_ProjectionMatrix = MatrixCreatePerspectiveFovLH(m_Fov, m_AspectRatio, m_NearPlane, m_FarPlane);
+	//m_ProjectionMatrix = MatrixCreatePerspectiveFovLH(m_Fov, m_AspectRatio, m_NearPlane, m_FarPlane);
+	m_ProjectionMatrix = glm::perspective(m_Fov, m_AspectRatio, m_NearPlane, m_FarPlane);
 }
 void GP2Camera::CalculateViewProjectionMatrix()
 {

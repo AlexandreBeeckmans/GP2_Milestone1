@@ -46,7 +46,7 @@ private:
 	glm::mat4 m_ViewProjectionMatrix{};
 
 	float m_NearPlane{ 0.1f };
-	float m_FarPlane{ 1000.0f };
+	float m_FarPlane{ 500.0f };
 
 	bool m_IsMoving{ true };
 	glm::vec2 m_MoveDirection{};

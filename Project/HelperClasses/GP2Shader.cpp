@@ -143,11 +143,11 @@ void GP2Shader::UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, fl
 	auto currentTime = std::chrono::high_resolution_clock::now();
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-	m_UBOSrc.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(0.0f), glm::vec3(0.0f, 1.0f, .0f));
-	m_UBOSrc.proj = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 100.0f);
+	m_UBOSrc.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 1.0f, .0f));
 
 	m_UBOSrc.view = camera.GetViewMatrix();
-	//m_UBOSrc.proj = camera.GetProjectionMatrix();
+	m_UBOSrc.proj = camera.GetProjectionMatrix();
+
 	m_UBOSrc.proj[1][1] *= -1;
 
 	m_UBOBuffer->Upload(m_UBOSrc);
