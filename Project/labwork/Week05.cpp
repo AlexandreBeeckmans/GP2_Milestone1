@@ -1,3 +1,5 @@
+#include <set>
+
 #include "vulkanbase/VulkanBase.h"
 
 void VulkanBase::pickPhysicalDevice() {

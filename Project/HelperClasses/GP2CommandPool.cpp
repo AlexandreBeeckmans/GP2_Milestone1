@@ -40,7 +40,7 @@ GP2CommandBuffer GP2CommandPool::CreateCommandBuffer() const
 	return cmdBuffer;
 }
 
-void GP2CommandPool::Destroy()
+void GP2CommandPool::Destroy() const
 {
 	vkDestroyCommandPool(m_VkDevice, m_CommandPool, nullptr);
 }

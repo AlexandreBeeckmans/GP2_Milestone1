@@ -20,7 +20,7 @@ public:
 private:
 
 	void DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent);
-	void DrawScene();
+	void DrawScene() const;
 
 	void CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass);
 

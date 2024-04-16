@@ -7,13 +7,18 @@
 class GP2Scene
 {
 public:
-	GP2Scene();
+	GP2Scene() = default;
 	~GP2Scene() = default;
 
-	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
-	void Cleanup(const VkDevice& vkDevice);
+	GP2Scene(const GP2Scene& other) = delete;
+	GP2Scene(GP2Scene&& other) noexcept = delete;
+	GP2Scene& operator=(const GP2Scene& other) = delete;
+	GP2Scene& operator=(GP2Scene&& other) noexcept = delete;
 
-	void Draw(const VkCommandBuffer& vkCommandBuffer);
+	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
+	void Cleanup(const VkDevice& vkDevice) const;
+
+	void Draw(const VkCommandBuffer& vkCommandBuffer) const;
 
 	void AddMesh(GP2Mesh& mesh);
 

@@ -13,7 +13,7 @@
 #include "GP2DescriptorPool.h"
 
 
-class GP2Shader
+class GP2Shader final
 {
 public:
 	GP2Shader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile);
@@ -26,31 +26,31 @@ public:
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
 	void DestroyShaderModules(const VkDevice& vkDevice);
-	void DestroyUniformBuffer(const VkDevice& vkDevice);
+	void DestroyUniformBuffer(const VkDevice& vkDevice) const;
 
 	const std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStages();
 
-	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo();
-	VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
+	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo() const;
+	static VkPipelineInputAssemblyStateCreateInfo CreateInputAssemblyStateInfo();
 
-	void CreateDescriptorSets(const VkDevice& vkDevice)
+	void CreateDescriptorSets(const VkDevice& vkDevice) const
 	{
 		m_DescriptorPool->CreateDescriptorSets(vkDevice, m_DescriptorSetLayout, { m_UBOBuffer->GetVkBuffer() });
 	}
 	void CreateDescriptorSetLayout(const VkDevice& vkDevice);
-	const VkDescriptorSetLayout& GetDescriptorSetLayout()
+	const VkDescriptorSetLayout& GetDescriptorSetLayout() const
 	{
 		return m_DescriptorSetLayout;
 	}
-	void BindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, size_t index);
+	void BindDescriptorSet(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, size_t index) const;
 	void UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov, const GP2Camera& camera);
 
 private:
 
-	VkPipelineShaderStageCreateInfo createFragmentShaderInfo(const VkDevice& vkDevice);
-	VkPipelineShaderStageCreateInfo createVertexShaderInfo(const VkDevice& vkDevice);
+	VkPipelineShaderStageCreateInfo CreateFragmentShaderInfo(const VkDevice& vkDevice) const;
+	VkPipelineShaderStageCreateInfo CreateVertexShaderInfo(const VkDevice& vkDevice) const;
 
-	VkShaderModule createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);
+	static VkShaderModule CreateShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);
 
 	std::string m_VertexShaderFile;
 	std::string m_FragmentShaderFile;

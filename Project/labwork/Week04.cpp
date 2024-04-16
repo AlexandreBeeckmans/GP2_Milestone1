@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "vulkanbase/VulkanBase.h"
 
 SwapChainSupportDetails VulkanBase::querySwapChainSupport(VkPhysicalDevice device) {

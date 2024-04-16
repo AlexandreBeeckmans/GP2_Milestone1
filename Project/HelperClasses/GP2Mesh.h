@@ -18,13 +18,14 @@ public:
 	GP2Mesh() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
-	void Destroy(const VkDevice& vkDevice);
+	void Destroy(const VkDevice& vkDevice) const;
 
 	void Draw(VkCommandBuffer commandBuffer) const;
 	
 	void AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 });
 	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0});
-	void AddIndex(const uint16_t value);
+	void AddVertex(const Vertex& vertex);
+	void AddIndex(size_t value);
 
 protected:
 	int GetNumberVertices()const;

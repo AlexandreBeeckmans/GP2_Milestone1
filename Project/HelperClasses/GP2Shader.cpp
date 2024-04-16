@@ -13,7 +13,9 @@
 
 GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fragmentShaderFile):
 	m_VertexShaderFile{ vertexShaderFile },
-	m_FragmentShaderFile{ fragmentShaderFile }
+	m_FragmentShaderFile{ fragmentShaderFile },
+	m_DescriptorSetLayout{},
+	m_UBOSrc{}
 {
 	m_BindingDescription = Vertex::getBindingDescription();
 	m_AttributeDescription = Vertex::getAttributeDescriptions();
@@ -22,8 +24,8 @@ GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fra
 
 void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
 {
-	m_ShaderStages.push_back(createFragmentShaderInfo(vkDevice));
-	m_ShaderStages.push_back(createVertexShaderInfo(vkDevice));
+	m_ShaderStages.push_back(CreateFragmentShaderInfo(vkDevice));
+	m_ShaderStages.push_back(CreateVertexShaderInfo(vkDevice));
 
 
 	m_UBOBuffer = std::make_unique<GP2DataBuffer>(vkPhysicalDevice,
@@ -33,7 +35,7 @@ void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkP
 		sizeof(UniformBufferObject));
 	m_UBOBuffer->Map(vkDevice);
 
-	m_DescriptorPool = std::make_unique<GP2DescriptorPool>(vkDevice, 0, 1);
+	m_DescriptorPool = std::make_unique<GP2DescriptorPool>(vkDevice, 1);
 }
 void GP2Shader::DestroyShaderModules(const VkDevice& vkDevice)
 {
@@ -44,7 +46,7 @@ void GP2Shader::DestroyShaderModules(const VkDevice& vkDevice)
 	m_ShaderStages.clear();
 }
 
-void GP2Shader::DestroyUniformBuffer(const VkDevice& vkDevice)
+void GP2Shader::DestroyUniformBuffer(const VkDevice& vkDevice) const
 {
 	m_UBOBuffer->Destroy(vkDevice);
 	m_DescriptorPool->DestroyPool(vkDevice);
@@ -55,12 +57,12 @@ const std::vector<VkPipelineShaderStageCreateInfo>& GP2Shader::GetShaderStages()
 	return m_ShaderStages;
 }
 
-VkPipelineVertexInputStateCreateInfo GP2Shader::GetVertexInputStateInfo()
+VkPipelineVertexInputStateCreateInfo GP2Shader::GetVertexInputStateInfo() const
 {
 	return m_VertexInputInfo;
 }
 
-VkPipelineInputAssemblyStateCreateInfo GP2Shader::createInputAssemblyStateInfo()
+VkPipelineInputAssemblyStateCreateInfo GP2Shader::CreateInputAssemblyStateInfo()
 {
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -69,10 +71,10 @@ VkPipelineInputAssemblyStateCreateInfo GP2Shader::createInputAssemblyStateInfo()
 	return inputAssembly;
 }
 
-VkPipelineShaderStageCreateInfo GP2Shader::createFragmentShaderInfo(const VkDevice& vkDevice)
+VkPipelineShaderStageCreateInfo GP2Shader::CreateFragmentShaderInfo(const VkDevice& vkDevice) const
 {
 	std::vector<char> fragShaderCode = readFile(m_FragmentShaderFile);
-	VkShaderModule fragShaderModule = createShaderModule(vkDevice, fragShaderCode);
+	VkShaderModule fragShaderModule = CreateShaderModule(vkDevice, fragShaderCode);
 
 	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -82,10 +84,10 @@ VkPipelineShaderStageCreateInfo GP2Shader::createFragmentShaderInfo(const VkDevi
 
 	return fragShaderStageInfo;
 }
-VkPipelineShaderStageCreateInfo GP2Shader::createVertexShaderInfo(const VkDevice& vkDevice)
+VkPipelineShaderStageCreateInfo GP2Shader::CreateVertexShaderInfo(const VkDevice& vkDevice) const
 {
 	std::vector<char> vertShaderCode = readFile(m_VertexShaderFile);
-	VkShaderModule vertShaderModule = createShaderModule(vkDevice, vertShaderCode);
+	VkShaderModule vertShaderModule = CreateShaderModule(vkDevice, vertShaderCode);
 
 	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
 	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -95,7 +97,7 @@ VkPipelineShaderStageCreateInfo GP2Shader::createVertexShaderInfo(const VkDevice
 	return vertShaderStageInfo;
 }
 
-VkShaderModule GP2Shader::createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code)
+VkShaderModule GP2Shader::CreateShaderModule(const VkDevice& vkDevice, const std::vector<char>& code)
 {
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -112,7 +114,7 @@ VkShaderModule GP2Shader::createShaderModule(const VkDevice& vkDevice, const std
 
 void GP2Shader::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 {
-	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+	VkDescriptorSetLayoutBinding uboLayoutBinding;
 	uboLayoutBinding.binding = 0;
 	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	uboLayoutBinding.descriptorCount = 1;
@@ -131,7 +133,7 @@ void GP2Shader::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 	}
 }
 
-void GP2Shader::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index)
+void GP2Shader::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index)const
 {
 	m_DescriptorPool->BindDescriptorSet(buffer, layout, index);
 }

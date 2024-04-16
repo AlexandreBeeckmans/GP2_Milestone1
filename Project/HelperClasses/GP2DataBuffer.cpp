@@ -9,7 +9,6 @@ GP2DataBuffer::GP2DataBuffer(
 	VkMemoryPropertyFlags properties,
 	VkDeviceSize size
 ) :
-	m_VkDevice{ vkDevice },
 	m_Size{ size }
 {
 	CreateBuffer(size, usage, properties, m_VkBuffer, m_VkBufferMemory, vkDevice, vkPhysicalDevice);
@@ -25,7 +24,6 @@ GP2DataBuffer::GP2DataBuffer(
 	GP2CommandPool commandPool,
 	VkQueue graphicsQueue
 ) :
-	m_VkDevice{ vkDevice },
 	m_Size{ size }
 {
 	VkBuffer stagingBuffer{};
@@ -35,7 +33,7 @@ GP2DataBuffer::GP2DataBuffer(
 
 	void* data{};
 	vkMapMemory(vkDevice, stagingBufferMemory, 0, size, 0, &data);
-	memcpy(data, bufferData, size_t(size));
+	memcpy(data, bufferData, static_cast<size_t>(size));
 	vkUnmapMemory(vkDevice, stagingBufferMemory);
 	CreateBuffer(size, usage, properties, m_VkBuffer, m_VkBufferMemory, vkDevice, vkPhysicalDevice);
 
@@ -122,7 +120,7 @@ void GP2DataBuffer::CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuf
 	vkAllocateCommandBuffers(vkDevice, &allocateInfo, const_cast<VkCommandBuffer*>(commandBuffer.GetpVkCommandBuffer()));
 	commandBuffer.BeginRecording(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
-	VkBufferCopy copyRegion{};
+	VkBufferCopy copyRegion;
 	copyRegion.srcOffset = 0;
 	copyRegion.dstOffset = 0;
 	copyRegion.size = size;
@@ -141,7 +139,7 @@ void GP2DataBuffer::CopyBuffer(const VkBuffer& srcBuffer, const VkBuffer& dstBuf
 	vkFreeCommandBuffers(vkDevice, commandPool.GetVkCommandPool(), 1, commandBuffer.GetpVkCommandBuffer());
 }
 
-void GP2DataBuffer::Upload(UniformBufferObject& ubo)
+void GP2DataBuffer::Upload(UniformBufferObject& ubo) const
 {
 	memcpy(m_UniformBufferMapped, &ubo, m_Size);
 }

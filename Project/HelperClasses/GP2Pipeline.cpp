@@ -122,7 +122,7 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	pipelineInfo.stageCount = (uint32_t)m_Shader.GetShaderStages().size();
 	pipelineInfo.pStages = m_Shader.GetShaderStages().data();
 	pipelineInfo.pVertexInputState = &m_Shader.GetVertexInputStateInfo();
-	pipelineInfo.pInputAssemblyState = &m_Shader.createInputAssemblyStateInfo();
+	pipelineInfo.pInputAssemblyState = &m_Shader.CreateInputAssemblyStateInfo();
 
 	pipelineInfo.pViewportState = &viewportState;
 	pipelineInfo.pRasterizationState = &rasterizer;
@@ -147,23 +147,23 @@ void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExte
 
 	vkCmdBindPipeline(m_Buffer->GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline);
 
-	VkViewport viewport{};
+	VkViewport viewport;
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)swapChainExtent.width;
-	viewport.height = (float)swapChainExtent.height;
+	viewport.width = static_cast<float>(swapChainExtent.width);
+	viewport.height = static_cast<float>(swapChainExtent.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(m_Buffer->GetVkCommandBuffer(), 0, 1, &viewport);
 
-	VkRect2D scissor{};
+	VkRect2D scissor;
 	scissor.offset = { 0, 0 };
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(m_Buffer->GetVkCommandBuffer(), 0, 1, &scissor);
 
 	DrawScene();
 }
-void GP2Pipeline::DrawScene()
+void GP2Pipeline::DrawScene() const
 {
 	m_pScene->Draw(m_Buffer->GetVkCommandBuffer());
 }

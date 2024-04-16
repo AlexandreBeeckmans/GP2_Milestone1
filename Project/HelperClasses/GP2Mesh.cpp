@@ -18,7 +18,7 @@ void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhy
 	VkDeviceSize indexBufferSize = sizeof(m_Indices[0]) * m_Indices.size();
 	m_IndexBuffer = std::make_unique<GP2DataBuffer>(vkPhysicalDevice, vkDevice, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBufferSize, m_Indices.data(), commandPool, graphicsQueue);
 }
-void GP2Mesh::Destroy(const VkDevice& vkDevice)
+void GP2Mesh::Destroy(const VkDevice& vkDevice) const
 {
 	m_VertexBuffer->Destroy(vkDevice);
 	m_IndexBuffer->Destroy(vkDevice);
@@ -38,11 +38,19 @@ void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal)
 }
 void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal)
 {
-	m_Vertices.emplace_back(Vertex{ pos, color, normal });
+	Vertex tempVertex{};
+	tempVertex.pos = pos;
+	tempVertex.color = color;
+	tempVertex.normal = normal;
+	AddVertex(tempVertex);
 }
-void GP2Mesh::AddIndex(const uint16_t value)
+void GP2Mesh::AddVertex(const Vertex& vertex)
 {
-	m_Indices.push_back(value);
+	m_Vertices.emplace_back(vertex);
+}
+void GP2Mesh::AddIndex(size_t value)
+{
+	m_Indices.push_back(static_cast<uint16_t>(value));
 }
 
 int GP2Mesh::GetNumberVertices()const

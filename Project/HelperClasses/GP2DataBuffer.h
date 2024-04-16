@@ -9,7 +9,7 @@ class GP2DataBuffer
 {
 public:
 
-	GP2DataBuffer() {};
+	GP2DataBuffer() = default;
 	GP2DataBuffer(
 		VkPhysicalDevice physicalDevice,
 		VkDevice device,
@@ -30,8 +30,7 @@ public:
 
 	~GP2DataBuffer() = default;
 
-	/*void Upload(VkDeviceSize size, void* data);
-	void Map(VkDeviceSize size, void* data);*/
+
 	void Destroy(const VkDevice& vkDevice);
 	void BindAsVertexBuffer(VkCommandBuffer commandBuffer);
 	void BindAsIndexBuffer(VkCommandBuffer commandBuffer);
@@ -46,20 +45,18 @@ public:
 		return m_VkBufferMemory;
 	};
 
-	VkDeviceSize GetSizeInBytes()
+	VkDeviceSize GetSizeInBytes() const
 	{
 		return m_Size;
 	};
 
 	void CreateBuffer(const VkDeviceSize size, const VkBufferUsageFlags& usage, const VkMemoryPropertyFlags& properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice);
-	void Upload(UniformBufferObject& ubo);
+	void Upload(UniformBufferObject& ubo) const;
 	void Map(const VkDevice& device);
 
 
 	static uint32_t FindMemoryType(const uint32_t typeFilter, const VkMemoryPropertyFlags& properties, const VkPhysicalDevice& vkPhysicalDevice);
 private:
-	
-	VkDevice m_VkDevice;
 	VkDeviceSize m_Size;
 
 	VkBuffer m_VkBuffer;

@@ -2,7 +2,6 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 
 
 #include "VulkanUtil.h"
@@ -10,19 +9,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <cstring>
-#include <cstdlib>
 #include <cstdint>
 #include <optional>
-#include <set>
-#include <limits>
-#include <algorithm>
 
 
 #include "HelperClasses/GP2Shader.h"
 #include "HelperClasses/GP2CommandPool.h"
 #include "HelperClasses/GP2CommandBuffer.h"
-#include "HelperClasses/Vertex.h"
 
 #include "HelperClasses/GP2Scene.h"
 #include <HelperClasses/GP2Pipeline.h>
@@ -32,10 +25,8 @@
 #include "HelperClasses/GP2CircleMesh.h"
 #include "HelperClasses/GP2CubeMesh.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
-#include "HelperClasses/GP2Scene2D.h"
-#include "HelperClasses/GP2Scene3D.h"
 
-const int MAX_FRAMES_IN_FLIGHT = 2;
+constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 
 const std::vector<const char*> validationLayers = {
@@ -50,7 +41,8 @@ struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
 	std::optional<uint32_t> presentFamily;
 
-	bool isComplete() {
+	bool isComplete() const
+	{
 		return graphicsFamily.has_value() && presentFamily.has_value();
 	}
 };
@@ -61,8 +53,11 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
-class VulkanBase {
+class VulkanBase
+{
 public:
+	VulkanBase() = default;
+
 	void run() {
 		initWindow();
 		initVulkan();
@@ -237,7 +232,7 @@ private:
 	void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 	void setupDebugMessenger();
 	std::vector<const char*> getRequiredExtensions();
-	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+	static bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	void createInstance();
 
 	void createSyncObjects();
@@ -311,7 +306,7 @@ private:
 
 		vkBindImageMemory(device, image, imageMemory, 0);
 	}
-	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -332,7 +327,7 @@ private:
 		return imageView;
 	}
 
-	VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+	VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) const
 	{
 		for(VkFormat format : candidates)
 		{
@@ -351,10 +346,9 @@ private:
 
 			throw std::runtime_error("failed to find supported format");
 		}
-
-		
+		return{};
 	}
-	VkFormat FindDepthFormat()
+	VkFormat FindDepthFormat() const
 	{
 		return FindSupportedFormat
 		(

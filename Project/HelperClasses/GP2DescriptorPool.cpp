@@ -2,13 +2,12 @@
 #include "Vertex.h"
 #include <algorithm>
 
-GP2DescriptorPool::GP2DescriptorPool(const VkDevice& device, VkDeviceSize size, size_t count) :
+GP2DescriptorPool::GP2DescriptorPool(const VkDevice& device, size_t count) :
 	m_Count{ count },
-	m_Size{ size },
 	m_DescriptorPool{},
 	m_DescriptorSets{}
 {
-	VkDescriptorPoolSize poolSize{};
+	VkDescriptorPoolSize poolSize;
 	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSize.descriptorCount = static_cast<uint32_t>(count);
 
@@ -23,12 +22,11 @@ GP2DescriptorPool::GP2DescriptorPool(const VkDevice& device, VkDeviceSize size, 
 	}
 }
 
-void GP2DescriptorPool::DestroyPool(const VkDevice& device)
+void GP2DescriptorPool::DestroyPool(const VkDevice& device) const
 {
 	vkDestroyDescriptorPool(device, m_DescriptorPool, nullptr);
 
 }
-
 void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer> buffers)
 {
 	std::vector<VkDescriptorSetLayout> layouts(m_Count, descriptorSetLayout);
@@ -45,30 +43,27 @@ void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescripto
 
 	int i = 0;
 	std::for_each(buffers.begin(), buffers.end(), [&](const VkBuffer& buffer)
-		{
-			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = buffer;
-			bufferInfo.offset = 0;
-			bufferInfo.range = sizeof(UniformBufferObject);
+	{
+		VkDescriptorBufferInfo bufferInfo;
+		bufferInfo.buffer = buffer;
+		bufferInfo.offset = 0;
+		bufferInfo.range = sizeof(UniformBufferObject);
 
-			VkWriteDescriptorSet descriptorWrite{};
-			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = m_DescriptorSets[i];
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
-			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrite.descriptorCount = 1;
-			descriptorWrite.pBufferInfo = &bufferInfo;
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = m_DescriptorSets[i];
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pBufferInfo = &bufferInfo;
 
-			vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+		vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
 
-			++i;
-
-		});
-
+		++i;
+	});
 }
-
-void GP2DescriptorPool::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index)
+void GP2DescriptorPool::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index) const
 {
 	vkCmdBindDescriptorSets(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 0, 1, &m_DescriptorSets[index], 0, nullptr);
 }
