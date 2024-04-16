@@ -181,7 +181,6 @@ private:
 
 	GLFWwindow* window;
 	void initWindow();
-	void KeyEvent(int key, int scancode, int action, int mods);
 
 	// Week 02
 	// Queue families
