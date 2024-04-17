@@ -38,13 +38,13 @@ void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal)
 }
 void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal)
 {
-	Vertex tempVertex{};
+	Vertex3D tempVertex{};
 	tempVertex.pos = pos;
 	tempVertex.color = color;
 	tempVertex.normal = normal;
 	AddVertex(tempVertex);
 }
-void GP2Mesh::AddVertex(const Vertex& vertex)
+void GP2Mesh::AddVertex(const Vertex3D& vertex)
 {
 	m_Vertices.emplace_back(vertex);
 }

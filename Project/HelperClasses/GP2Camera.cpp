@@ -40,7 +40,7 @@ void GP2Camera::Update()
 
 	//Camera Update Logic
 	constexpr float cameraSpeed{ 25.0f };
-	constexpr float rotationSpeed{ 25.0f };
+	constexpr float rotationSpeed{ 5.75f };
 
 	//Translate camera
 	glm::vec3 directionVector{ ManageTranslateInput() };
@@ -108,13 +108,11 @@ void GP2Camera::MouseMove(GLFWwindow* window, double xPos, double yPos)
 	if (state == GLFW_PRESS)
 	{
 		float dx = static_cast<float>(xPos) - m_DragStart.x;
-		if (dx < 0) 
+		if (dx > 0.0f || dx < 0.0f)
 		{
-			m_RotationDirection.y = 1;
-		}
-		else if(dx > 0)
-		{
-			m_RotationDirection.y = -1;
+			m_RotationDirection.y = -dx/std::abs(dx) * dx / (dx / std::abs(dx));
+			m_DragStart.x = static_cast<float>(xPos);
+			m_IsRotating = true;
 		}
 		else
 		{
@@ -122,19 +120,41 @@ void GP2Camera::MouseMove(GLFWwindow* window, double xPos, double yPos)
 		}
 
 		float dy = static_cast<float>(yPos) - m_DragStart.y;
-		if (dy > 0)
+		if (dy > 0.0f || dy < 0.0f)
 		{
-			m_RotationDirection.x = 1;
-		}
-		else if (dy < 0)
-		{
-			m_RotationDirection.x = -1;
+			m_RotationDirection.x = dy / std::abs(dy) * dy/(dy / std::abs(dy));
+			m_DragStart.y = static_cast<float>(yPos);
+			m_IsRotating = true;
 		}
 		else
 		{
 			m_RotationDirection.x = 0;
 		}
+		
+
+		//float dy = static_cast<float>(yPos) - m_DragStart.y;
+		//if (dy > 0)
+		//{
+		//	m_RotationDirection.x = 1;
+		//	m_DragStart.y = static_cast<float>(yPos);
+		//	//m_IsRotating = true;
+		//}
+		//else if (dy < 0)
+		//{
+		//	m_RotationDirection.x = -1;
+		//	m_DragStart.y = static_cast<float>(yPos);
+		//	//m_IsRotating = true;
+		//}
+		//else
+		//{
+		//	//m_IsRotating = false;
+		//}
+
+		return;
+		
 	}
+
+	m_IsRotating = false;
 }
 void GP2Camera::MouseEvent(GLFWwindow* window, int button, int action, int mods)
 {
@@ -145,11 +165,8 @@ void GP2Camera::MouseEvent(GLFWwindow* window, int button, int action, int mods)
 		glfwGetCursorPos(window, &xPos, &yPos);
 		m_DragStart.x = static_cast<float>(xPos);
 		m_DragStart.y = static_cast<float>(yPos);
-		m_IsRotating = true;
-		return;
 	}
 
-	m_IsRotating = false;
 }
 
 void GP2Camera::CalculateViewMatrix()

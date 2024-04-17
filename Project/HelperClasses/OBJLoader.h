@@ -7,7 +7,7 @@
 
 #include "Vertex.h"
 
-static bool ParseOBJ(const std::string& filename, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, bool flipAxisAndWinding = true)
+static bool ParseOBJ(const std::string& filename, std::vector<Vertex3D>& vertices, std::vector<uint32_t>& indices, bool flipAxisAndWinding = true)
 {
 	std::ifstream file(filename);
 	if (!file)
@@ -62,7 +62,7 @@ static bool ParseOBJ(const std::string& filename, std::vector<Vertex>& vertices,
 			//add the material index as attibute to the attribute array
 			//
 			// Faces or triangles
-			Vertex vertex{};
+			Vertex3D vertex{};
 			size_t iPosition, iTexCoord, iNormal;
 
 			uint32_t tempIndices[3];

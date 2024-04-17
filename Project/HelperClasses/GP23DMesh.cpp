@@ -11,14 +11,14 @@ GP23DMesh::GP23DMesh(const std::string& filePath):
 	GP2Mesh(),
 	m_filePath{ filePath }
 {
-	std::vector<Vertex> vertices{};
+	std::vector<Vertex3D> vertices{};
 	std::vector<uint32_t> indices{};
 
 	ParseOBJ(m_filePath, vertices, indices);
 
-	for(const Vertex& vertex : vertices)
+	for(const Vertex3D& vertex : vertices)
 	{
-		Vertex vertexToAdd{};
+		Vertex3D vertexToAdd{};
 		vertexToAdd.pos = vertex.pos;
 		vertexToAdd.color = glm::vec3{ 1.0f,0.5f,0 };
 		vertexToAdd.normal = vertex.normal;

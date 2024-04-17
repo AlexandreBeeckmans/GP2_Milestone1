@@ -17,9 +17,9 @@ GP2Shader::GP2Shader(const std::string& vertexShaderFile, const std::string& fra
 	m_DescriptorSetLayout{},
 	m_UBOSrc{}
 {
-	m_BindingDescription = Vertex::getBindingDescription();
-	m_AttributeDescription = Vertex::getAttributeDescriptions();
-	m_VertexInputInfo = Vertex::GetVertexInputInfo(m_BindingDescription, m_AttributeDescription);
+	m_BindingDescription = Vertex3D::getBindingDescription();
+	m_AttributeDescription = Vertex3D::getAttributeDescriptions();
+	m_VertexInputInfo = Vertex3D::GetVertexInputInfo(m_BindingDescription, m_AttributeDescription);
 }
 
 void GP2Shader::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice)
