@@ -1,6 +1,7 @@
 #include "GP2CubeMesh.h"
 GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float height)
 {
+	m_Position = center;
 	//TopFace
 	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });
 	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });

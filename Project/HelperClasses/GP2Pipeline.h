@@ -21,8 +21,10 @@ private:
 
 	void DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent);
 	void DrawScene() const;
+	void UpdateScene() const;
 
 	void CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass);
+	VkPushConstantRange CreatePushConstantRange() const;
 
 	VkPipeline m_Pipeline;
 	GP2Shader m_Shader;

@@ -96,6 +96,9 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	pipelineLayoutInfo.setLayoutCount = 1;
 	//pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pSetLayouts = &m_Shader.GetDescriptorSetLayout();
+	pipelineLayoutInfo.pushConstantRangeCount = 1;
+	VkPushConstantRange pushConstantRange = CreatePushConstantRange();
+	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
 	if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
@@ -142,6 +145,15 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	m_Shader.DestroyShaderModules(vkDevice);
 }
 
+VkPushConstantRange GP2Pipeline::CreatePushConstantRange() const
+{
+		VkPushConstantRange pushConstantRange = {};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // Stage the pus constant is accessible from
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(MeshData); // Size of push constant block
+		return pushConstantRange;
+}
+
 void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent)
 {
 
@@ -165,5 +177,10 @@ void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExte
 }
 void GP2Pipeline::DrawScene() const
 {
-	m_pScene->Draw(m_Buffer->GetVkCommandBuffer());
+	m_pScene->Draw(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout);
+}
+
+void GP2Pipeline::UpdateScene() const
+{
+	m_pScene->Update();
 }

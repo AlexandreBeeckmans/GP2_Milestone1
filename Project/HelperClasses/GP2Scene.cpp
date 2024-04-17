@@ -11,11 +11,19 @@ void GP2Scene::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPh
 	}
 }
 
-void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer) const
+void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout) const
 {
 	for (const GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.Draw(vkCommandBuffer);
+		mesh.Draw(vkCommandBuffer, pipelineLayout);
+	}
+}
+
+void GP2Scene::Update()
+{
+	for (GP2Mesh& mesh : m_Meshes)
+	{
+		mesh.Update();
 	}
 }
 

@@ -18,7 +18,8 @@ public:
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
 	void Cleanup(const VkDevice& vkDevice) const;
 
-	void Draw(const VkCommandBuffer& vkCommandBuffer) const;
+	void Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout) const;
+	void Update();
 
 	void AddMesh(GP2Mesh& mesh);
 

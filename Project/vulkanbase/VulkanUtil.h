@@ -26,3 +26,11 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
 
 std::vector<char> readFile(const std::string& filename);
 
+struct VulkanContext
+{
+	VkDevice device;
+	VkPhysicalDevice physicalDevice;
+	VkRenderPass renderPass;
+	VkExtent2D swapChainExtent;
+};
+

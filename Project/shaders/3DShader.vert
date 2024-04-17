@@ -1,11 +1,16 @@
 #version 450
 
-layout(binding = 0) uniform UniformBufferObject
+layout(set = 0 , binding = 0) uniform UniformBufferObject
+{
+    mat4 proj;
+    mat4 view; 
+
+} ubo;
+
+layout(push_constant)uniform PushConstants
 {
     mat4 model;
-    mat4 view; 
-    mat4 proj;
-} ubo;
+} mesh;
 
 
 layout(location = 0) in vec3 inPosition;
@@ -17,8 +22,8 @@ layout(location = 1) out vec3 fragNormal;
 
 void main() 
 {
-    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition.x, inPosition.y, inPosition.z, 1.0);
-    vec4 tNormal =  ubo.model*vec4(inNormal,0);
+    gl_Position =  ubo.proj * ubo.view * mesh.model * vec4(inPosition.x, inPosition.y, inPosition.z, 1.0);
+    vec4 tNormal =  mesh.model*vec4(inNormal,0);
     fragNormal = normalize(tNormal.xyz); // interpolation of normal attribute in fragment shader.
     fragColor = inColor; // interpolation of color attribute in fragment shader.
 }

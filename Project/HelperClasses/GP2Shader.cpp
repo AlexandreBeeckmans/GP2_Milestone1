@@ -140,13 +140,6 @@ void GP2Shader::BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layou
 
 void GP2Shader::UpdateUniformBuffer(uint32_t currentImage, float aspectRatio, float fov, const GP2Camera& camera)
 {
-	static auto startTime = std::chrono::high_resolution_clock::now();
-
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-	m_UBOSrc.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(45.0f), glm::vec3(0.0f, 1.0f, .0f));
-
 	m_UBOSrc.view = camera.GetViewMatrix();
 	m_UBOSrc.proj = camera.GetProjectionMatrix();
 
