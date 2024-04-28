@@ -6,6 +6,13 @@ add_custom_command(
     ${CMAKE_CURRENT_SOURCE_DIR}/resources
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 
+add_custom_target(copy_textures ALL)
+add_custom_command(
+    TARGET copy_textures PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/textures
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/textures)
+
 
 set(SHADER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 set(SHADER_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/shaders")

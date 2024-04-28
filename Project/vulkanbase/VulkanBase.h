@@ -3,6 +3,9 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+
+
 
 #include "VulkanUtil.h"
 
@@ -101,7 +104,11 @@ private:
 		CreateFrameBuffers();
 
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
+		
+
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
+
+		CreateTextureImage();
 
 		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
@@ -141,6 +148,9 @@ private:
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 		vkDestroyRenderPass(device, m_RenderPass, nullptr);
+
+		vkDestroyImage(device, m_TextureImage, nullptr);
+		vkFreeMemory(device, m_TextureImageMemory, nullptr);
 		m_CommandPool.Destroy();
 
 		for (auto imageView : swapChainImageViews) {
@@ -239,6 +249,13 @@ private:
 
 	void createSyncObjects();
 	void drawFrame();
+
+	void CreateTextureImage();
+	VkCommandBuffer BeginSingleTimeCommands();
+	void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
+	void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+	void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
@@ -385,4 +402,9 @@ private:
 	}
 
 	GP2Camera m_Camera{ {0,0,-100}, 30, WIDTH, HEIGHT };
+
+
+	VkImage m_TextureImage;
+	VkDeviceMemory m_TextureImageMemory;
+	
 };
