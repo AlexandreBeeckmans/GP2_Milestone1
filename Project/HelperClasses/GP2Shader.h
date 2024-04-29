@@ -33,9 +33,9 @@ public:
 	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo() const;
 	static VkPipelineInputAssemblyStateCreateInfo CreateInputAssemblyStateInfo();
 
-	void CreateDescriptorSets(const VkDevice& vkDevice) const
+	void CreateDescriptorSets(const VkDevice& vkDevice, const VkImageView& textureImageView, const VkSampler& textureSampler) const
 	{
-		m_DescriptorPool->CreateDescriptorSets(vkDevice, m_DescriptorSetLayout, { m_UBOBuffer->GetVkBuffer() });
+		m_DescriptorPool->CreateDescriptorSets(vkDevice, m_DescriptorSetLayout, { m_UBOBuffer->GetVkBuffer() }, textureImageView, textureSampler);
 	}
 	void CreateDescriptorSetLayout(const VkDevice& vkDevice);
 	const VkDescriptorSetLayout& GetDescriptorSetLayout() const
@@ -60,7 +60,7 @@ private:
 	//Week 2
 	VkPipelineVertexInputStateCreateInfo m_VertexInputInfo{};
 	VkVertexInputBindingDescription m_BindingDescription{};
-	std::array<VkVertexInputAttributeDescription, 3> m_AttributeDescription{};
+	std::array<VkVertexInputAttributeDescription, 4> m_AttributeDescription{};
 
 
 	//UBO

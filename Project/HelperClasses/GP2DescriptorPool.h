@@ -15,7 +15,7 @@ public:
 
 	void DestroyPool(const VkDevice& device) const;
 
-	void CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer > buffers);
+	void CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer > buffers, const VkImageView& textureImageView, const VkSampler& textureSampler);
 
 	void BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index) const;
 

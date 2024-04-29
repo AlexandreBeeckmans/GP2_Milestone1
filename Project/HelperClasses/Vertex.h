@@ -21,9 +21,9 @@ struct Vertex3D
 		return bindingDescription;
 	}
 
-	static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+	static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
 	{
-		std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+		std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
@@ -39,10 +39,15 @@ struct Vertex3D
 		attributeDescriptions[2].location = 2;
 		attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[2].offset = offsetof(Vertex3D, normal);
+
+		attributeDescriptions[3].binding = 0;
+		attributeDescriptions[3].location = 3;
+		attributeDescriptions[3].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[3].offset = offsetof(Vertex3D, uv);
 		return attributeDescriptions;
 	}
 
-	static VkPipelineVertexInputStateCreateInfo GetVertexInputInfo(const VkVertexInputBindingDescription& bindingDescription, const std::array<VkVertexInputAttributeDescription, 3>& attributeDescription)
+	static VkPipelineVertexInputStateCreateInfo GetVertexInputInfo(const VkVertexInputBindingDescription& bindingDescription, const std::array<VkVertexInputAttributeDescription, 4>& attributeDescription)
 	{
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

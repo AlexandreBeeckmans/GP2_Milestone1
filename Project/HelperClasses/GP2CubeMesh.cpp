@@ -19,10 +19,10 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(2);
 
 	//Front face
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, .0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f});
 
 	//t1
 	AddIndex(4);

@@ -11,7 +11,7 @@ public:
 	~GP2Pipeline() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue&
-	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer);
+	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const VkImageView& textureImageView, const VkSampler& textureSampler);
 	void Cleanup(const VkDevice& vkDevice);
 
 

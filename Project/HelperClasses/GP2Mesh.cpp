@@ -42,16 +42,17 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayou
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 }
 
-void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal)
+void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
 {
-	AddVertex({ pos.x, pos.y, 0 }, color, normal);
+	AddVertex({ pos.x, pos.y, 0 }, color, normal, uv);
 }
-void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal)
+void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
 {
 	Vertex3D tempVertex{};
 	tempVertex.pos = pos;
 	tempVertex.color = color;
 	tempVertex.normal = normal;
+	tempVertex.uv = uv;
 	AddVertex(tempVertex);
 }
 void GP2Mesh::AddVertex(const Vertex3D& vertex)

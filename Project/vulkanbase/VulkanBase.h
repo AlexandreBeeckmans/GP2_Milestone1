@@ -109,9 +109,11 @@ private:
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
 		CreateTextureImage();
+		CreateTextureImageView();
+		CreateImageSampler();
 
-		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
-		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
+		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImageView, m_TextureSampler);
+		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImageView, m_TextureSampler);
 
 		// week 06
 		createSyncObjects();
@@ -149,10 +151,14 @@ private:
 		}
 		vkDestroyRenderPass(device, m_RenderPass, nullptr);
 
+		vkDestroySampler(device, m_TextureSampler, nullptr);
+		vkDestroyImageView(device, m_TextureImageView, nullptr);
 		vkDestroyImage(device, m_TextureImage, nullptr);
 		vkFreeMemory(device, m_TextureImageMemory, nullptr);
+
 		m_CommandPool.Destroy();
 
+		
 		for (auto imageView : swapChainImageViews) {
 			vkDestroyImageView(device, imageView, nullptr);
 		}
@@ -251,10 +257,13 @@ private:
 	void drawFrame();
 
 	void CreateTextureImage();
+	void CreateTextureImageView();
 	VkCommandBuffer BeginSingleTimeCommands();
 	void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
+	void CreateImageSampler();
 
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
@@ -346,6 +355,8 @@ private:
 		return imageView;
 	}
 
+
+
 	VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) const
 	{
 		for(VkFormat format : candidates)
@@ -406,5 +417,7 @@ private:
 
 	VkImage m_TextureImage;
 	VkDeviceMemory m_TextureImageMemory;
+	VkImageView m_TextureImageView;
+	VkSampler m_TextureSampler;
 	
 };

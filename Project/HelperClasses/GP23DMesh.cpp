@@ -22,6 +22,7 @@ GP23DMesh::GP23DMesh(const std::string& filePath):
 		vertexToAdd.pos = vertex.pos;
 		vertexToAdd.color = glm::vec3{ 1.0f,0.5f,0 };
 		vertexToAdd.normal = vertex.normal;
+		vertexToAdd.uv = vertex.uv;
 		AddVertex(vertexToAdd);
 	}
 
