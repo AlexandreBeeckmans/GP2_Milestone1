@@ -3,6 +3,7 @@
 #include "GP2Shader.h"
 #include "GP2Scene.h"
 #include "GP2Camera.h"
+#include "GP2Image.h"
 
 class GP2Pipeline
 {
@@ -11,7 +12,7 @@ public:
 	~GP2Pipeline() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue&
-	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const VkImageView& textureImageView, const VkSampler& textureSampler);
+	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& image);
 	void Cleanup(const VkDevice& vkDevice);
 
 

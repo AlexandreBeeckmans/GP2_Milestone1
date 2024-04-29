@@ -27,6 +27,7 @@
 #include "HelperClasses/GP2Camera.h"
 #include "HelperClasses/GP2CircleMesh.h"
 #include "HelperClasses/GP2CubeMesh.h"
+#include "HelperClasses/GP2Image.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
@@ -68,6 +69,63 @@ public:
 		cleanup();
 	}
 
+	static void CreateImage(const VkDevice& device, const VkPhysicalDevice& physicalDevice, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+	{
+		VkImageCreateInfo imageInfo{};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.extent.width = width;
+		imageInfo.extent.height = height;
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.format = format;
+		imageInfo.tiling = tiling;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageInfo.usage = usage;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+		if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create image!");
+		}
+
+		VkMemoryRequirements memRequirements;
+		vkGetImageMemoryRequirements(device, image, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = GP2DataBuffer::FindMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
+
+		if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
+			throw std::runtime_error("failed to allocate image memory!");
+		}
+
+		vkBindImageMemory(device, image, imageMemory, 0);
+	}
+	static VkImageView CreateImageView(const VkDevice& device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+	{
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = format;
+		viewInfo.subresourceRange.aspectMask = aspectFlags;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+
+		VkImageView imageView;
+		if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create texture image view!");
+		}
+
+		return imageView;
+	}
+
+
 private:
 	void initVulkan()
 	{
@@ -82,8 +140,10 @@ private:
 
 		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
 		m_3DScene.AddMesh(cubeMesh);
+
+
 		GP23DMesh loadedMesh{};
-		m_3DScene.AddMesh(loadedMesh);
+		m_PBRScene.AddMesh(loadedMesh);
 
 		// week 06
 		createInstance();
@@ -108,12 +168,12 @@ private:
 
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
-		CreateTextureImage();
-		CreateTextureImageView();
-		CreateImageSampler();
+		m_TextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
+		m_NormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_normal.png");
 
-		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImageView, m_TextureSampler);
-		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImageView, m_TextureSampler);
+		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage);
+		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage);
+		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_NormalImage);
 
 		// week 06
 		createSyncObjects();
@@ -125,6 +185,7 @@ private:
 
 			m_Camera.Update();
 			m_3DScene.Update();
+			m_PBRScene.Update();
 
 			// week 06
 			drawFrame();
@@ -145,16 +206,15 @@ private:
 		
 		m_2DPipeline.Cleanup(device);
 		m_3DPipeline.Cleanup(device);
+		m_PBRPipeline.Cleanup(device);
 
 		for (auto framebuffer : m_SwapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 		vkDestroyRenderPass(device, m_RenderPass, nullptr);
 
-		vkDestroySampler(device, m_TextureSampler, nullptr);
-		vkDestroyImageView(device, m_TextureImageView, nullptr);
-		vkDestroyImage(device, m_TextureImage, nullptr);
-		vkFreeMemory(device, m_TextureImageMemory, nullptr);
+		m_TextureImage.Destroy(device);
+		m_NormalImage.Destroy(device);
 
 		m_CommandPool.Destroy();
 
@@ -256,15 +316,6 @@ private:
 	void createSyncObjects();
 	void drawFrame();
 
-	void CreateTextureImage();
-	void CreateTextureImageView();
-	VkCommandBuffer BeginSingleTimeCommands();
-	void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
-	void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-	void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-
-	void CreateImageSampler();
-
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
@@ -275,6 +326,7 @@ private:
 
 	GP2Scene m_2DScene{};
 	GP2Scene m_3DScene{};
+	GP2Scene m_PBRScene{};
 
 	GP2Pipeline m_2DPipeline
 	{
@@ -290,6 +342,13 @@ private:
 		&m_3DScene
 	};
 
+	GP2Pipeline m_PBRPipeline
+	{
+		"shaders/3DShader.vert.spv",
+		"shaders/3DShader.frag.spv",
+		&m_PBRScene
+	};
+
 	VkRenderPass m_RenderPass{};
 	GP2CommandPool m_CommandPool{};
 	GP2CommandBuffer m_CommandBuffer{};
@@ -299,61 +358,6 @@ private:
 	VkImageView m_DepthImageView{};
 
 
-	void CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
-	{
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.extent.width = width;
-		imageInfo.extent.height = height;
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.format = format;
-		imageInfo.tiling = tiling;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		imageInfo.usage = usage;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create image!");
-		}
-
-		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(device, image, &memRequirements);
-
-		VkMemoryAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = GP2DataBuffer::FindMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
-
-		if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate image memory!");
-		}
-
-		vkBindImageMemory(device, image, imageMemory, 0);
-	}
-	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const
-	{
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = format;
-		viewInfo.subresourceRange.aspectMask = aspectFlags;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
-
-		VkImageView imageView;
-		if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create texture image view!");
-		}
-
-		return imageView;
-	}
 
 
 
@@ -399,6 +403,8 @@ private:
 
 		CreateImage
 		(
+			device,
+			physicalDevice,
 			swapChainExtent.width, 
 			swapChainExtent.height, 
 			depthFormat,
@@ -409,15 +415,11 @@ private:
 			m_DepthImageMemory
 		);
 
-		m_DepthImageView = CreateImageView(m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+		m_DepthImageView = CreateImageView(device, m_DepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 	}
 
 	GP2Camera m_Camera{ {0,0,-100}, 30, WIDTH, HEIGHT };
 
-
-	VkImage m_TextureImage;
-	VkDeviceMemory m_TextureImageMemory;
-	VkImageView m_TextureImageView;
-	VkSampler m_TextureSampler;
-	
+	GP2Image m_TextureImage{};
+	GP2Image m_NormalImage{};
 };

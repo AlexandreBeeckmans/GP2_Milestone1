@@ -52,6 +52,7 @@ void VulkanBase::drawFrame() {
 
 	m_2DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
 	m_3DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
+	m_PBRPipeline.Record(imageIndex, swapChainExtent, m_Camera);
 
 	EndRenderPass(m_CommandBuffer);
 	m_CommandBuffer.EndRecording();

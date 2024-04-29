@@ -11,12 +11,12 @@ GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string&
 
 }
 
-void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const VkImageView& textureImageView, const VkSampler& textureSampler)
+void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture)
 {
 	m_Shader.Initialize(vkDevice, vkPhysicalDevice);
 
 	m_Shader.CreateDescriptorSetLayout(vkDevice);
-	m_Shader.CreateDescriptorSets(vkDevice, textureImageView, textureSampler);
+	m_Shader.CreateDescriptorSets(vkDevice, texture.GetImageView(), texture.GetSampler());
 
 	CreateGraphicsPipeline(vkDevice, renderPass);
 
