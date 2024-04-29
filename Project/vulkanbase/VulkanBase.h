@@ -344,8 +344,8 @@ private:
 
 	GP2Pipeline m_PBRPipeline
 	{
-		"shaders/3DShader.vert.spv",
-		"shaders/3DShader.frag.spv",
+		"shaders/PBRShader.vert.spv",
+		"shaders/PBRShader.frag.spv",
 		&m_PBRScene
 	};
 
