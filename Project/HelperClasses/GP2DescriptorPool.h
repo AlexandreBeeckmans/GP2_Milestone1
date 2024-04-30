@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+
+#include "GP2Image.h"
 #include "vulkanbase/VulkanUtil.h"
 
 class GP2DescriptorPool final
@@ -15,7 +17,8 @@ public:
 
 	void DestroyPool(const VkDevice& device) const;
 
-	void CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer > buffers, const VkImageView& textureImageView, const VkSampler& textureSampler);
+	void CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer> buffers, const
+	                          GP2Image& textureMap, const GP2Image& normalMap);
 
 	void BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index) const;
 
