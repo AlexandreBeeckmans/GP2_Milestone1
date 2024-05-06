@@ -33,4 +33,9 @@ void main()
     fragNormal = normalize(tNormal.xyz); // interpolation of normal attribute in fragment shader.
     fragColor = inColor; // interpolation of color attribute in fragment shader.
     fragUV = inUV;
+
+
+    vec4 tTangent =  mesh.model*vec4(inTangent,0);
+    fragTangent = normalize(tTangent.xyz);
+    
 }

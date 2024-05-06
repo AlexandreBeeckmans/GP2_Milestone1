@@ -14,7 +14,7 @@ layout(location = 0) out vec4 outColor;
 void main() 
 {
     const vec3 lightDirection = normalize(vec3(0.0, 1.0, -1.0));
-    const float lightIntensity = 7.0f;
+    const float lightIntensity = 1.0f;
 
     vec3 finalNormal = fragNormal;
     vec3 binormal = cross(fragNormal, fragTangent);
@@ -32,12 +32,11 @@ void main()
 
 
     // Calculate the dot product between the normal and the light direction
-    //float diff = max(dot(fragNormal, lightDirection), 0.2);
-    //float diff = max(dot(vec3(texture(normalSampler, fragUV)), lightDirection), 0.2);
     float diff = max(dot(finalNormal, lightDirection), 0.2);
 
     // Simple diffuse lighting
     vec4 diffuse = diff * texture(texSampler, fragUV);
+    //vec4 diffuse = vec4(diff * fragColor, 0);
 
 
     // Output color
