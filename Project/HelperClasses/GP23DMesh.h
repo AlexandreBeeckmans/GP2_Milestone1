@@ -6,8 +6,8 @@
 class GP23DMesh final : public GP2Mesh
 {
 public:
-	GP23DMesh();
-	GP23DMesh(const std::string& filePath);
+	GP23DMesh(const glm::vec3& position = {0,0,0});
+	GP23DMesh(const std::string& filePath, const glm::vec3& position = {0,0,0});
 
 	~GP23DMesh() = default;
 

@@ -9,13 +9,17 @@ GP2DescriptorPool::GP2DescriptorPool(const VkDevice& device, size_t count) :
 	m_DescriptorPool{},
 	m_DescriptorSets{}
 {
-	std::array<VkDescriptorPoolSize, 3> poolSizes{};
+	std::array<VkDescriptorPoolSize, 5> poolSizes{};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 	poolSizes[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 	poolSizes[2].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	poolSizes[3].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSizes[3].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	poolSizes[4].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	poolSizes[4].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -34,9 +38,9 @@ void GP2DescriptorPool::DestroyPool(const VkDevice& device) const
 	vkDestroyDescriptorPool(device, m_DescriptorPool, nullptr);
 
 }
-void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer> buffers, const GP2Image& textureMap, const GP2Image& normalMap)
+void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer> buffers, const GP2Image& textureMap, const GP2Image& normalMap, const GP2Image& specularMap, const GP2Image& glossMap)
 {
-	std::vector<VkDescriptorSetLayout> layouts(m_Count, descriptorSetLayout);
+std::vector<VkDescriptorSetLayout> layouts(m_Count, descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = m_DescriptorPool;
@@ -56,7 +60,7 @@ void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescripto
 		bufferInfo.offset = 0;
 		bufferInfo.range = sizeof(UniformBufferObject);
 
-		std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
+		std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = m_DescriptorSets[i];
@@ -91,6 +95,33 @@ void GP2DescriptorPool::CreateDescriptorSets(const VkDevice& device, VkDescripto
 		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[2].descriptorCount = 1;
 		descriptorWrites[2].pImageInfo = &normalImageInfo;
+
+
+		VkDescriptorImageInfo specularImageInfo{};
+		specularImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		specularImageInfo.imageView = specularMap.GetImageView();
+		specularImageInfo.sampler = specularMap.GetSampler();
+
+		descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[3].dstSet = m_DescriptorSets[i];
+		descriptorWrites[3].dstBinding = 3;
+		descriptorWrites[3].dstArrayElement = 0;
+		descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[3].descriptorCount = 1;
+		descriptorWrites[3].pImageInfo = &specularImageInfo;
+
+		VkDescriptorImageInfo glossImageInfo{};
+		glossImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		glossImageInfo.imageView = glossMap.GetImageView();
+		glossImageInfo.sampler = glossMap.GetSampler();
+
+		descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[4].dstSet = m_DescriptorSets[i];
+		descriptorWrites[4].dstBinding = 4;
+		descriptorWrites[4].dstArrayElement = 0;
+		descriptorWrites[4].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		descriptorWrites[4].descriptorCount = 1;
+		descriptorWrites[4].pImageInfo = &glossImageInfo;
 
 		vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 

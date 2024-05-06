@@ -141,7 +141,7 @@ private:
 		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
 		m_3DScene.AddMesh(cubeMesh);
 
-		GP23DMesh loadedMesh{};
+		GP23DMesh loadedMesh{ glm::vec3{-25,0,0} };
 		m_PBRScene.AddMesh(loadedMesh);
 
 		// week 06
@@ -169,10 +169,12 @@ private:
 
 		m_TextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
 		m_NormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_normal.png");
+		m_SpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_specular.png");
+		m_GlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_gloss.png");
 
-		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage);
-		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage);
-		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage);
+		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
 
 		// week 06
 		createSyncObjects();
@@ -183,8 +185,8 @@ private:
 			glfwPollEvents();
 
 			m_Camera.Update();
-			m_3DScene.Update();
-			m_PBRScene.Update();
+			m_3DScene.Update(m_Camera);
+			m_PBRScene.Update(m_Camera);
 
 			// week 06
 			drawFrame();
@@ -214,6 +216,8 @@ private:
 
 		m_TextureImage.Destroy(device);
 		m_NormalImage.Destroy(device);
+		m_SpecularImage.Destroy(device);
+		m_GlossImage.Destroy(device);
 
 		m_CommandPool.Destroy();
 
@@ -421,4 +425,6 @@ private:
 
 	GP2Image m_TextureImage{};
 	GP2Image m_NormalImage{};
+	GP2Image m_SpecularImage{};
+	GP2Image m_GlossImage{};
 };

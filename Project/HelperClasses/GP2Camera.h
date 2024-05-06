@@ -20,6 +20,9 @@ public:
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetProjectionMatrix() const;
 
+	glm::vec3 GetForward()const { return m_Forward; }
+	glm::vec3 GetPosition() const { return m_Origin; }
+
 	void KeyEvent(int key, int scancode, int action, int mods);
 	void MouseMove(GLFWwindow* window, double xPos, double yPos);
 	void MouseEvent(GLFWwindow* window, int button, int action, int mods);

@@ -2,13 +2,13 @@
 
 #include "OBJLoader.h"
 
-GP23DMesh::GP23DMesh() :
-	GP23DMesh("resources/vehicle.obj")
+GP23DMesh::GP23DMesh(const glm::vec3& position) :
+	GP23DMesh("resources/vehicle.obj", position)
 {}
 
 
-GP23DMesh::GP23DMesh(const std::string& filePath):
-	GP2Mesh(),
+GP23DMesh::GP23DMesh(const std::string& filePath, const glm::vec3& position):
+	GP2Mesh(position),
 	m_filePath{ filePath }
 {
 	std::vector<Vertex3D> vertices{};
@@ -19,7 +19,7 @@ GP23DMesh::GP23DMesh(const std::string& filePath):
 	for(const Vertex3D& vertex : vertices)
 	{
 		Vertex3D vertexToAdd{};
-		vertexToAdd.pos = vertex.pos;
+		vertexToAdd.pos = vertex.pos + position;
 		vertexToAdd.color = glm::vec3{ 1.0f,0.5f,0 };
 		vertexToAdd.normal = vertex.normal;
 		vertexToAdd.uv = vertex.uv;

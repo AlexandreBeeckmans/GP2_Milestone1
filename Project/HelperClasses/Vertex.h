@@ -75,4 +75,5 @@ struct UniformBufferObject
 struct MeshData
 {
 	glm::mat4 model;
+	glm::vec3 cameraPosition;
 };

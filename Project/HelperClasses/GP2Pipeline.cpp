@@ -12,12 +12,12 @@ GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string&
 }
 
 
-void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture, const GP2Image& normalMap)
+void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture, const GP2Image& normalMap, const GP2Image& specularMap, const GP2Image& glossMap)
 {
 	m_Shader.Initialize(vkDevice, vkPhysicalDevice);
 
 	m_Shader.CreateDescriptorSetLayout(vkDevice);
-	m_Shader.CreateDescriptorSets(vkDevice, texture, normalMap);
+	m_Shader.CreateDescriptorSets(vkDevice, texture, normalMap, specularMap, glossMap);
 
 	CreateGraphicsPipeline(vkDevice, renderPass);
 
@@ -95,9 +95,11 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
-	//pipelineLayoutInfo.pushConstantRangeCount = 0;
+
 	pipelineLayoutInfo.pSetLayouts = &m_Shader.GetDescriptorSetLayout();
 	pipelineLayoutInfo.pushConstantRangeCount = 1;
+
+
 	VkPushConstantRange pushConstantRange = CreatePushConstantRange();
 	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -152,6 +154,8 @@ VkPushConstantRange GP2Pipeline::CreatePushConstantRange() const
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // Stage the pus constant is accessible from
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = sizeof(MeshData); // Size of push constant block
+
+
 		return pushConstantRange;
 }
 
@@ -181,7 +185,7 @@ void GP2Pipeline::DrawScene() const
 	m_pScene->Draw(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout);
 }
 
-void GP2Pipeline::UpdateScene() const
-{
-	m_pScene->Update();
-}
+//void GP2Pipeline::UpdateScene(const GP2Camera& camera) const
+//{
+//	m_pScene->Update(camera);
+//}

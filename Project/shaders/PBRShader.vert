@@ -10,6 +10,7 @@ layout(set = 0 , binding = 0) uniform UniformBufferObject
 layout(push_constant)uniform PushConstants
 {
     mat4 model;
+    vec3 cameraPosition;
 } mesh;
 
 
@@ -26,6 +27,9 @@ layout(location = 1) out vec3 fragNormal;
 layout(location = 2) out vec2 fragUV;
 layout(location = 3) out vec3 fragTangent;
 
+layout(location = 4) out vec3 fragCameraPosition;
+layout(location = 5) out vec3 fragModelPosition;
+
 void main() 
 {
     gl_Position =  ubo.proj * ubo.view * mesh.model * vec4(inPosition.x, inPosition.y, inPosition.z, 1.0);
@@ -37,5 +41,8 @@ void main()
 
     vec4 tTangent =  mesh.model*vec4(inTangent,0);
     fragTangent = normalize(tTangent.xyz);
+
+    fragCameraPosition = mesh.cameraPosition;
+    fragModelPosition = vec3(mesh.model[0][3], mesh.model[1][3], mesh.model[2][3]);
     
 }

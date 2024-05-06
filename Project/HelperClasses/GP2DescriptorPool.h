@@ -18,7 +18,7 @@ public:
 	void DestroyPool(const VkDevice& device) const;
 
 	void CreateDescriptorSets(const VkDevice& device, VkDescriptorSetLayout descriptorSetLayout, std::initializer_list<VkBuffer> buffers, const
-	                          GP2Image& textureMap, const GP2Image& normalMap);
+		GP2Image& textureMap, const GP2Image& normalMap, const GP2Image& specularMap = {}, const GP2Image& glossMap = { });
 
 	void BindDescriptorSet(VkCommandBuffer buffer, VkPipelineLayout layout, size_t index) const;
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+
+#include "GP2Camera.h"
 #include "GP2Mesh.h"
 
 
@@ -19,7 +21,7 @@ public:
 	void Cleanup(const VkDevice& vkDevice) const;
 
 	void Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout) const;
-	void Update();
+	void Update(const GP2Camera& camera);
 
 	void AddMesh(GP2Mesh& mesh);
 

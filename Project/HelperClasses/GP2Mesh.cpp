@@ -10,6 +10,12 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include <chrono>
 
+GP2Mesh::GP2Mesh(const glm::vec3& position) :
+m_Position(position),
+m_VertexConstant()
+{
+}
+
 void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
 {
 	VkDeviceSize vertexBufferSize{ sizeof(m_Vertices[0]) * m_Vertices.size() };
@@ -37,14 +43,14 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayou
 		VK_SHADER_STAGE_VERTEX_BIT, // Stage flag should match the push constan range in the layout
 		0, // Offset within the push constant block
 		sizeof(MeshData), // Size of the push constants to update
-		&m_VertexConstant); // Pointer to the data);
+		&m_Constants); // Pointer to the data);
 
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 }
 
 void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
 {
-	AddVertex({ pos.x, pos.y, 0 }, color, normal, uv);
+	AddVertex({ m_Position.x + pos.x, m_Position.y + pos.y, 0 }, color, normal, uv);
 }
 void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
 {
@@ -64,7 +70,7 @@ void GP2Mesh::AddIndex(size_t value)
 	m_Indices.push_back(static_cast<uint16_t>(value));
 }
 
-void GP2Mesh::Update()
+void GP2Mesh::Update(const glm::vec3& cameraPosition)
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -75,6 +81,10 @@ void GP2Mesh::Update()
 	m_VertexConstant = glm::translate(m_VertexConstant, m_Position);
 	m_VertexConstant = glm::rotate(m_VertexConstant, time * glm::radians(45.0f), glm::vec3(0.0f, 1.0f, .0f));
 	m_VertexConstant = glm::translate(m_VertexConstant, -m_Position);
+
+	m_CameraPositionConstant = cameraPosition;
+
+	m_Constants = { m_VertexConstant, m_CameraPositionConstant };
 }
 
 int GP2Mesh::GetNumberVertices()const

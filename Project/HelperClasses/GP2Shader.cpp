@@ -136,7 +136,21 @@ void GP2Shader::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 	samplerNormalLayoutBinding.pImmutableSamplers = nullptr;
 	samplerNormalLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 3> bindings = { uboLayoutBinding, samplerLayoutBinding, samplerNormalLayoutBinding };
+	VkDescriptorSetLayoutBinding samplerSpecularLayoutBinding;
+	samplerSpecularLayoutBinding.binding = 3;
+	samplerSpecularLayoutBinding.descriptorCount = 1;
+	samplerSpecularLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerSpecularLayoutBinding.pImmutableSamplers = nullptr;
+	samplerSpecularLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	VkDescriptorSetLayoutBinding samplerGlossLayoutBinding;
+	samplerGlossLayoutBinding.binding = 4;
+	samplerGlossLayoutBinding.descriptorCount = 1;
+	samplerGlossLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerGlossLayoutBinding.pImmutableSamplers = nullptr;
+	samplerGlossLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+	std::array<VkDescriptorSetLayoutBinding, 5> bindings = { uboLayoutBinding, samplerLayoutBinding, samplerNormalLayoutBinding, samplerSpecularLayoutBinding, samplerGlossLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());

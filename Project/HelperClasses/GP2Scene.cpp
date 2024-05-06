@@ -19,11 +19,11 @@ void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayo
 	}
 }
 
-void GP2Scene::Update()
+void GP2Scene::Update(const GP2Camera& camera)
 {
 	for (GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.Update();
+		mesh.Update(camera.GetPosition());
 	}
 }
 
