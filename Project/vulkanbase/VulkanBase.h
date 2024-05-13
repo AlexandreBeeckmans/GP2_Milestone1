@@ -131,17 +131,17 @@ private:
 	{
 
 
-		GP2CircleMesh circleMesh{ glm::vec2{0.25f, -0.5f}, 0.35f, 0.25f, 32 };
+		GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
 		m_2DScene.AddMesh(circleMesh);
-		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.5f, -0.5f}, 0.65f, 0.45f };
+		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
 		m_2DScene.AddMesh(rectangleMesh);
-		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{0.25f, 0.65f}, 0.75f, 0.5f, 0.25f };
+		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
 		m_2DScene.AddMesh(roundedRectangleMesh);
 
 		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
 		m_3DScene.AddMesh(cubeMesh);
 
-		GP23DMesh loadedMesh{ glm::vec3{-25,0,0} };
+		GP23DMesh loadedMesh{ glm::vec3{-25.0f,0,0} };
 		m_PBRScene.AddMesh(loadedMesh);
 
 		// week 06
