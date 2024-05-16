@@ -13,17 +13,17 @@ layout(location = 2) in vec2 fragUV;
 layout(location = 3) in vec3 fragTangent;
 
 layout(location = 4) in vec3 fragCameraPosition;
-layout(location = 5) in vec3 fragVertexPosition;
+layout(location = 5) in vec4 fragVertexPosition;
 
 layout(location = 0) out vec4 outColor;
 
 
 void main() 
 {
-    const vec3 lightDirection = normalize(vec3(0.577f, -0.577f, 0.577f));
+    const vec3 lightDirection = vec3(0.577f, -0.577f, 0.577f);
     const float lightIntensity = 7.0f;
-    const float shininess = 25.0f;
-    const vec3 ambientLighting = vec3(0.03f, 0.03f, 0.03f);
+    const float shininess = 5.0f;
+    const vec3 ambientLighting = vec3(0.003f, 0.003f, 0.003f);
 
     vec3 binormal = cross(fragNormal, fragTangent);
         
@@ -36,25 +36,25 @@ void main()
     sampledNormal.y -= 1.0f;
     sampledNormal.z -= 1.0f;
     
-    vec3 finalNormal = normalize(sampledNormal * tangentSpaceAxis);
+    vec3 finalNormal =  tangentSpaceAxis * normalize(sampledNormal);;
 
     float observedArea = dot(-lightDirection, finalNormal);
 
 
 
     vec3 specularValue = vec3(texture(specularSampler, fragUV));
-    vec3 reflection = reflect(-lightDirection, fragNormal);
+    vec3 reflection = reflect(-lightDirection, finalNormal);
 
-    vec3 invViewDirection = normalize(fragCameraPosition - fragVertexPosition);
+    vec3 invViewDirection = normalize(fragCameraPosition - fragVertexPosition.xyz);
 
 
 	//If cosine is lower than zero we take a 0 value
     float cosinus = max(0.0f, dot(reflection, invViewDirection));
     vec3 specularReflection =
 	vec3(
-        specularValue.x * pow(cosinus, shininess),
-		specularValue.y * pow(cosinus, shininess),
-		specularValue.z * pow(cosinus, shininess)
+        specularValue.x * pow(cosinus, (shininess * texture(glossSampler, fragUV).r)),
+		specularValue.y * pow(cosinus, (shininess * texture(glossSampler, fragUV).r)),
+		specularValue.z * pow(cosinus, (shininess * texture(glossSampler, fragUV).r))
 	);
     
 
@@ -70,7 +70,7 @@ void main()
 
         vec3 diffuseSpecularColor = vec3(texture(texSampler, fragUV)) + specularReflection * lightIntensity;
 
-        vec3 finalColor = diffuseSpecularColor * observedArea;
+        vec3 finalColor = diffuseSpecularColor * observedArea + ambientLighting;
         //vec3 finalColor = diffuseSpecularColor * observedArea + ambientLighting;
 
         outColor = vec4(finalColor,1);

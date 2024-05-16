@@ -28,11 +28,11 @@ layout(location = 2) out vec2 fragUV;
 layout(location = 3) out vec3 fragTangent;
 
 layout(location = 4) out vec3 fragCameraPosition;
-layout(location = 5) out vec3 fragVertexPosition;
+layout(location = 5) out vec4 fragVertexPosition;
 
 void main() 
 {
-    gl_Position =  ubo.proj * ubo.view * mesh.model * vec4(inPosition.x, inPosition.y, inPosition.z, 1.0);
+    gl_Position =  ubo.proj * ubo.view * mesh.model * vec4(inPosition, 1.0);
 
     vec4 tNormal =  mesh.model * vec4(inNormal,0);
     fragNormal = normalize(tNormal.xyz); // interpolation of normal attribute in fragment shader.
@@ -42,9 +42,9 @@ void main()
     fragUV = inUV;
 
     vec4 tTangent =  mesh.model * vec4(inTangent,0);
-    fragTangent = normalize(vec3(tTangent.x, -tTangent.y, tTangent.z));
+    fragTangent = normalize(tTangent.xyz);
 
     fragCameraPosition = mesh.cameraPosition;
-    fragVertexPosition = vec3(gl_Position);
+    fragVertexPosition = mesh.model * vec4(inPosition, 1.0f);
     
 }

@@ -114,6 +114,8 @@ std::vector<VkDescriptorSetLayout> layouts(m_Count, descriptorSetLayout);
 		glossImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		glossImageInfo.imageView = glossMap.GetImageView();
 		glossImageInfo.sampler = glossMap.GetSampler();
+		
+
 
 		descriptorWrites[4].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[4].dstSet = m_DescriptorSets[i];
