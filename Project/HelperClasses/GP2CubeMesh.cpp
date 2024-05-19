@@ -2,11 +2,11 @@
 GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float height)
 {
 	m_Position = center;
-	//TopFace
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f });
+	//FrontFace
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f});
 
 	//t1
 	AddIndex(2);
@@ -18,11 +18,11 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(3);
 	AddIndex(2);
 
-	//Front face
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f});
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f});
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, .0f});
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f});
+	//Left face
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f});
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f});
 
 	//t1
 	AddIndex(4);
@@ -34,11 +34,11 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(6);
 	AddIndex(5);
 
-	//Back face
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f });
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f });
+	//Right face
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 1.0f, 0.0f, 0.0f }, { -1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f});
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 1.0f, 0.0f, 0.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f });
 
 	//t1
 	AddIndex(10);
@@ -50,11 +50,11 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(10);
 	AddIndex(11);
 
-	//Right face
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f });
+	//Top face
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f });
 
 	//t1
 	AddIndex(14);
@@ -66,11 +66,11 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(14);
 	AddIndex(15);
 
-	//Left face
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f });
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f });
+	//Bottom face
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f });
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z + 0.5f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f });
 
 	//t1
 	AddIndex(16);
@@ -83,10 +83,10 @@ GP2CubeMesh::GP2CubeMesh(const glm::vec3& center, const float width, const float
 	AddIndex(17);
 
 	//BottomFace
-	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f });
-	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f });
+	AddVertex({ center.x - (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x + (0.5f * width), center.y - (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x + (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f});
+	AddVertex({ center.x - (0.5f * width), center.y + (0.5f * height), center.z - 0.5f }, { 0.0f, 1.0f, 0.0f }, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f});
 
 	//t1
 	AddIndex(20);

@@ -48,17 +48,18 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayou
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 }
 
-void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
+void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent)
 {
-	AddVertex({ m_Position.x + pos.x, m_Position.y + pos.y, 0 }, color, normal, uv);
+	AddVertex({ m_Position.x + pos.x, m_Position.y + pos.y, 0 }, color, normal, uv, tangent);
 }
-void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv)
+void GP2Mesh::AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent)
 {
 	Vertex3D tempVertex{};
 	tempVertex.pos = pos;
 	tempVertex.color = color;
 	tempVertex.normal = normal;
 	tempVertex.uv = uv;
+	tempVertex.tangent = tangent;
 	AddVertex(tempVertex);
 }
 void GP2Mesh::AddVertex(const Vertex3D& vertex)

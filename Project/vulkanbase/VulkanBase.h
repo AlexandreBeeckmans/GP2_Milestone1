@@ -142,7 +142,9 @@ private:
 		m_3DScene.AddMesh(cubeMesh);
 
 		GP23DMesh loadedMesh{ glm::vec3{-25.0f,0,0} };
+		GP2CubeMesh pbrCubeMesh{ glm::vec3{0, 0, 0}, 5.0f, 5.0f };
 		m_PBRScene.AddMesh(loadedMesh);
+		m_PBRScene.AddMesh(pbrCubeMesh);
 
 		// week 06
 		createInstance();

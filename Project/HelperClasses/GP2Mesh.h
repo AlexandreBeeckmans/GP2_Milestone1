@@ -22,8 +22,8 @@ public:
 
 	void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const;
 	
-	void AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0});
-	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0});
+	void AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0}, glm::vec3 tangent = { 0,0,0 });
+	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0}, glm::vec3 tangent = {0,0,0});
 	void AddVertex(const Vertex3D& vertex);
 	void AddIndex(size_t value);
 	void Update(const glm::vec3& cameraPosition);

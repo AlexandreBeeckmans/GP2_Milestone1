@@ -23,7 +23,7 @@ void main()
     const vec3 lightDirection = vec3(0.577f, -0.577f, 0.577f);
     const float lightIntensity = 7.0f;
     const float shininess = 5.0f;
-    const vec3 ambientLighting = vec3(0.003f, 0.003f, 0.003f);
+    const vec3 ambientLighting = vec3(0.025f, 0.025f, 0.025f);
 
     vec3 binormal = cross(fragNormal, fragTangent);
         
@@ -71,7 +71,6 @@ void main()
         vec3 diffuseSpecularColor = vec3(texture(texSampler, fragUV)) + specularReflection * lightIntensity;
 
         vec3 finalColor = diffuseSpecularColor * observedArea + ambientLighting;
-        //vec3 finalColor = diffuseSpecularColor * observedArea + ambientLighting;
 
         outColor = vec4(finalColor,1);
         //outColor = vec4(observedArea, observedArea, observedArea, 1);
@@ -80,4 +79,6 @@ void main()
     {
         outColor = vec4(0,0,0,1);
     }
+
+    //outColor = vec4(vec3(texture(texSampler, fragUV)),1);
 }
