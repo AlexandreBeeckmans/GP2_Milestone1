@@ -88,7 +88,9 @@ set(SOURCES
     "HelperClasses/GP2Camera.cpp"
     "HelperClasses/GP2Camera.h" 
     "HelperClasses/GP2Image.h" 
-    "HelperClasses/GP2Image.cpp")
+    "HelperClasses/GP2Image.cpp"
+    "HelperClasses/GP2SphereMesh.h"
+    "HelperClasses/GP2SphereMesh.cpp")
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )

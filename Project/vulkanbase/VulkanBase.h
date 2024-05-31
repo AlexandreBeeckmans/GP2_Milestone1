@@ -29,6 +29,7 @@
 #include "HelperClasses/GP2CubeMesh.h"
 #include "HelperClasses/GP2Image.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
+#include "HelperClasses/GP2SphereMesh.h"
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
@@ -139,12 +140,22 @@ private:
 		m_2DScene.AddMesh(roundedRectangleMesh);
 
 		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
+		GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
 		m_3DScene.AddMesh(cubeMesh);
+		m_3DScene.AddMesh(sphereMesh);
 
 		GP23DMesh loadedMesh{ glm::vec3{-25.0f,0,0} };
 		GP2CubeMesh pbrCubeMesh{ glm::vec3{0, 0, 0}, 5.0f, 5.0f };
+		
 		m_PBRScene.AddMesh(loadedMesh);
 		m_PBRScene.AddMesh(pbrCubeMesh);
+		
+
+
+		GP2SphereMesh pbrSphereMesh{ glm::vec3{0.0f,10.0f,0.0f}, 5.0f };
+		GP23DMesh stormtrooperMesh{ "resources/stormtrooper.obj", glm::vec3{0,0, -35} };
+		m_FloorPBRScene.AddMesh(pbrSphereMesh);
+		m_FloorPBRScene.AddMesh(stormtrooperMesh);
 
 		// week 06
 		createInstance();
@@ -178,6 +189,13 @@ private:
 		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
 		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
 
+		m_FloorTextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_diffuse.jpg");
+		m_FloorNormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_normal.jpg");
+		m_FloorSpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_specular.jpg");
+		m_FloorGlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_gloss.jpg");
+		m_FloorPBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_FloorTextureImage, m_FloorNormalImage, m_FloorSpecularImage, m_FloorGlossImage);
+
+
 		// week 06
 		createSyncObjects();
 	}
@@ -189,6 +207,7 @@ private:
 			m_Camera.Update();
 			m_3DScene.Update(m_Camera);
 			m_PBRScene.Update(m_Camera);
+			m_FloorPBRScene.Update(m_Camera);
 
 			// week 06
 			drawFrame();
@@ -210,6 +229,7 @@ private:
 		m_2DPipeline.Cleanup(device);
 		m_3DPipeline.Cleanup(device);
 		m_PBRPipeline.Cleanup(device);
+		m_FloorPBRPipeline.Cleanup(device);
 
 		for (auto framebuffer : m_SwapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
@@ -220,6 +240,11 @@ private:
 		m_NormalImage.Destroy(device);
 		m_SpecularImage.Destroy(device);
 		m_GlossImage.Destroy(device);
+
+		m_FloorTextureImage.Destroy(device);
+		m_FloorNormalImage.Destroy(device);
+		m_FloorSpecularImage.Destroy(device);
+		m_FloorGlossImage.Destroy(device);
 
 		m_CommandPool.Destroy();
 
@@ -332,6 +357,7 @@ private:
 	GP2Scene m_2DScene{};
 	GP2Scene m_3DScene{};
 	GP2Scene m_PBRScene{};
+	GP2Scene m_FloorPBRScene{};
 
 	GP2Pipeline m_2DPipeline
 	{
@@ -352,6 +378,13 @@ private:
 		"shaders/PBRShader.vert.spv",
 		"shaders/PBRShader.frag.spv",
 		&m_PBRScene
+	};
+
+	GP2Pipeline m_FloorPBRPipeline
+	{
+		"shaders/PBRShader.vert.spv",
+		"shaders/PBRShader.frag.spv",
+		& m_FloorPBRScene
 	};
 
 	VkRenderPass m_RenderPass{};
@@ -429,4 +462,9 @@ private:
 	GP2Image m_NormalImage{};
 	GP2Image m_SpecularImage{};
 	GP2Image m_GlossImage{};
+
+	GP2Image m_FloorTextureImage{};
+	GP2Image m_FloorNormalImage{};
+	GP2Image m_FloorSpecularImage{};
+	GP2Image m_FloorGlossImage{};
 };
