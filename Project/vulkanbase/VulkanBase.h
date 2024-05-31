@@ -128,7 +128,8 @@ public:
 
 
 private:
-	void LoadScene(const std::string& jsonPath, GP2Scene& scene);
+	void LoadScene(const std::string& jsonPath, GP2Scene& scene, const std::string& fragmentShaderPath, const std::string&
+	               vertexShaderPath);
 
 	void initVulkan()
 	{
@@ -174,22 +175,13 @@ private:
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
-		/*m_TextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
-		m_NormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_normal.png");
-		m_SpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_specular.png");
-		m_GlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_gloss.png");*/
-
 		//m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
-		//m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
-		LoadScene("scenes/PBRScene.json", m_PBRScene);
-		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
-		
 
-		//m_FloorTextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_diffuse.jpg");
-		//m_FloorNormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_normal.jpg");
-		//m_FloorSpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_specular.jpg");
-		//m_FloorGlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_gloss.jpg");
-		//m_FloorPBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
+
+		//m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+
+		LoadScene("scenes/PBRScene.json", m_PBRScene, m_PBRPipeline.GetFragmentShaderPath(), m_PBRPipeline.GetVertexShaderPath());
+		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 
 		// week 06
@@ -203,7 +195,6 @@ private:
 			m_Camera.Update();
 			m_3DScene.Update(m_Camera);
 			m_PBRScene.Update(m_Camera);
-			m_FloorPBRScene.Update(m_Camera);
 
 			// week 06
 			drawFrame();
@@ -225,22 +216,11 @@ private:
 		m_2DPipeline.Cleanup(device);
 		m_3DPipeline.Cleanup(device);
 		m_PBRPipeline.Cleanup(device);
-		m_FloorPBRPipeline.Cleanup(device);
 
 		for (auto framebuffer : m_SwapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 		vkDestroyRenderPass(device, m_RenderPass, nullptr);
-
-		m_TextureImage.Destroy(device);
-		m_NormalImage.Destroy(device);
-		m_SpecularImage.Destroy(device);
-		m_GlossImage.Destroy(device);
-
-		m_FloorTextureImage.Destroy(device);
-		m_FloorNormalImage.Destroy(device);
-		m_FloorSpecularImage.Destroy(device);
-		m_FloorGlossImage.Destroy(device);
 
 		m_CommandPool.Destroy();
 
@@ -353,7 +333,6 @@ private:
 	GP2Scene m_2DScene{};
 	GP2Scene m_3DScene{};
 	GP2Scene m_PBRScene{};
-	GP2Scene m_FloorPBRScene{};
 
 	GP2Pipeline m_2DPipeline
 	{
@@ -374,13 +353,6 @@ private:
 		"shaders/PBRShader.vert.spv",
 		"shaders/PBRShader.frag.spv",
 		&m_PBRScene
-	};
-
-	GP2Pipeline m_FloorPBRPipeline
-	{
-		"shaders/PBRShader.vert.spv",
-		"shaders/PBRShader.frag.spv",
-		& m_FloorPBRScene
 	};
 
 	VkRenderPass m_RenderPass{};
@@ -453,14 +425,4 @@ private:
 	}
 
 	GP2Camera m_Camera{ {0,0,-100}, 30, WIDTH, HEIGHT };
-
-	GP2Image m_TextureImage{};
-	GP2Image m_NormalImage{};
-	GP2Image m_SpecularImage{};
-	GP2Image m_GlossImage{};
-
-	GP2Image m_FloorTextureImage{};
-	GP2Image m_FloorNormalImage{};
-	GP2Image m_FloorSpecularImage{};
-	GP2Image m_FloorGlossImage{};
 };

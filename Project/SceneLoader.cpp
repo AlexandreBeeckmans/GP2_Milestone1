@@ -11,7 +11,7 @@ struct LoadedMesh
 	std::string type{};
 };
 
-void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene)
+void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene, const std::string& fragmentShaderPath, const std::string& vertexShaderPath)
 {
 	std::ifstream inputFile(jsonPath);
 	if (!inputFile.is_open())
@@ -31,50 +31,39 @@ void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene)
 			temp.position.x = obj["pos"]["x"];
 			temp.position.y = obj["pos"]["y"];
 			temp.position.z = obj["pos"]["z"];
-
 			temp.type = obj["type"];
+
+			GP2Mesh meshToAdd{};
 
 			if (temp.type == "Cube")
 			{
 				const float width{ obj["width"] };
 				const float height{ obj["height"] };
-
-
-				GP2CubeMesh meshToAdd{temp.position, width, height };
-				meshToAdd.SetTextureMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_diffuse.jpg");
-				meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_normal.jpg");
-				meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_specular.jpg");
-				meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_gloss.jpg");
-				meshToAdd.InitShader(device, physicalDevice, "shaders/PBRShader.vert.spv", "shaders/PBRShader.frag.spv");
-
-
-				scene.AddMesh(meshToAdd);
-				continue;
+				meshToAdd = GP2CubeMesh{ temp.position, width, height };
 			}
 
 			if (temp.type == "Sphere")
 			{
 				const float radius{ obj["radius"] };
-
-
-
-				scene.AddMesh(GP2SphereMesh{ temp.position, radius });
-				continue;
+				meshToAdd = GP2SphereMesh{ temp.position, radius };
 			}
 
 			if (temp.type == "Obj")
 			{
 				const std::string path{ obj["path"] };
 
-				GP23DMesh meshToAdd{ path, temp.position };
-				meshToAdd.SetTextureMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
-				meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_normal.png");
-				meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_specular.png");
-				meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_gloss.png");
-				meshToAdd.InitShader(device, physicalDevice, "shaders/PBRShader.vert.spv", "shaders/PBRShader.frag.spv");
-
-				scene.AddMesh(meshToAdd);
+				meshToAdd = GP23DMesh { path, temp.position };
 			}
+
+			
+			meshToAdd.SetTextureMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["textureMap"]);
+			meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["normalMap"]);
+			meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["specularMap"]);
+			meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue,obj["glossMap"]);
+			meshToAdd.InitShader(device, physicalDevice, vertexShaderPath, fragmentShaderPath);
+
+
+			scene.AddMesh(meshToAdd);
 		}
 
 	}

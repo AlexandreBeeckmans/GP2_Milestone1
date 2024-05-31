@@ -6,13 +6,15 @@ GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string&
 	m_Shader{ vertexShaderPath, fragmentShaderPath },
 	m_Buffer{},
 	m_pScene{pScene},
-	m_PipelineLayout{}
+	m_PipelineLayout{},
+	m_VertexShaderPath(vertexShaderPath),
+	m_FragmentShaderPath(fragmentShaderPath)
 {
 
 }
 
 
-void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture, const GP2Image& normalMap, const GP2Image& specularMap, const GP2Image& glossMap)
+void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer)
 {
 	m_Shader.Initialize(vkDevice, vkPhysicalDevice);
 	m_Shader.CreateDescriptorSetLayout(vkDevice);

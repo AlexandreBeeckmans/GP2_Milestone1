@@ -7,7 +7,11 @@
 			"z" : 0
 		},
 		"type": "Obj",
-		"path": "resources/vehicle.obj"
+		"path": "resources/vehicle.obj",
+		"textureMap":"textures/vehicle_diffuse.png",
+		"normalMap":"textures/vehicle_normal.png",
+		"specularMap":"textures/vehicle_specular.png",
+		"glossMap":"textures/vehicle_gloss.png"
 	},
 
 	{
@@ -19,6 +23,10 @@
 		},
 		"type": "Cube",
 		"width": 5,
-		"height": 5
+		"height": 5,
+		"textureMap":"textures/floor_diffuse.jpg",
+		"normalMap":"textures/floor_normal.jpg",
+		"specularMap":"textures/floor_specular.jpg",
+		"glossMap":"textures/floor_gloss.jpg"
 	}
 ]

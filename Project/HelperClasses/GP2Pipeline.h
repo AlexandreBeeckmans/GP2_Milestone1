@@ -12,18 +12,19 @@ public:
 	~GP2Pipeline() = default;
 
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue&
-	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture, const
-		GP2Image& normalMap, const GP2Image& specularMap = {}, const GP2Image& glossMap = {});
+	                graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer);
 	void Cleanup(const VkDevice& vkDevice) const;
 
 
 	void Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera);
 
+	std::string GetVertexShaderPath() const { return m_VertexShaderPath; }
+	std::string GetFragmentShaderPath() const { return m_FragmentShaderPath; }
+
 private:
 
 	void DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera);
 	void DrawScene(const VkExtent2D& swapChainExtent, const GP2Camera& camera) const;
-	//void UpdateScene(const GP2Camera& camera) const;
 
 	void CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass);
 	VkPushConstantRange CreatePushConstantRange() const;
@@ -34,4 +35,7 @@ private:
 	GP2Scene* m_pScene;
 
 	VkPipelineLayout m_PipelineLayout;
+
+	std::string m_VertexShaderPath;
+	std::string m_FragmentShaderPath;
 };
