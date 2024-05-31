@@ -77,3 +77,11 @@ struct MeshData
 	glm::mat4 model;
 	glm::vec3 cameraPosition;
 };
+
+struct ToggleMapData
+{
+	int useNormalMap = 0;
+	int useDiffuseMap = 0;
+	int useSpecularMap = 0;
+	int useGlossMap = 0;
+};

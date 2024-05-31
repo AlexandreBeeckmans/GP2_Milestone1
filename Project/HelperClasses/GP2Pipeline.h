@@ -27,7 +27,9 @@ private:
 	void DrawScene(const VkExtent2D& swapChainExtent, const GP2Camera& camera) const;
 
 	void CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass);
-	VkPushConstantRange CreatePushConstantRange() const;
+
+	VkPushConstantRange CreatePushConstantRangeVertex() const;
+	VkPushConstantRange CreatePushConstantRangeFragment() const;
 
 	VkPipeline m_Pipeline;
 	GP2Shader m_Shader;

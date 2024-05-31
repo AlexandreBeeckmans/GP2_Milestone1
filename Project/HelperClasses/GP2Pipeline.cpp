@@ -96,11 +96,15 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	pipelineLayoutInfo.setLayoutCount = 1;
 
 	pipelineLayoutInfo.pSetLayouts = &m_Shader.GetDescriptorSetLayout();
-	pipelineLayoutInfo.pushConstantRangeCount = 1;
+	
 
 
-	VkPushConstantRange pushConstantRange = CreatePushConstantRange();
-	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+	VkPushConstantRange pushConstantRangeVertex = CreatePushConstantRangeVertex();
+	VkPushConstantRange pushConstantRangeFragment = CreatePushConstantRangeFragment();
+	std::array<VkPushConstantRange, 2> pushConstantRanges = { pushConstantRangeVertex, pushConstantRangeFragment };
+	pipelineLayoutInfo.pushConstantRangeCount = static_cast<uint32_t>(pushConstantRanges.size());
+
+	pipelineLayoutInfo.pPushConstantRanges = pushConstantRanges.data();
 
 	if (vkCreatePipelineLayout(vkDevice, &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
@@ -147,7 +151,7 @@ void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRende
 	m_Shader.DestroyShaderModules(vkDevice);
 }
 
-VkPushConstantRange GP2Pipeline::CreatePushConstantRange() const
+VkPushConstantRange GP2Pipeline::CreatePushConstantRangeVertex() const
 {
 		VkPushConstantRange pushConstantRange = {};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // Stage the pus constant is accessible from
@@ -156,6 +160,17 @@ VkPushConstantRange GP2Pipeline::CreatePushConstantRange() const
 
 
 		return pushConstantRange;
+}
+
+VkPushConstantRange GP2Pipeline::CreatePushConstantRangeFragment() const
+{
+	VkPushConstantRange pushConstantRange = {};
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT; // Stage the pus constant is accessible from
+	pushConstantRange.offset = sizeof(MeshData);
+	pushConstantRange.size = sizeof(ToggleMapData); // Size of push constant block
+
+
+	return pushConstantRange;
 }
 
 void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera)
@@ -183,8 +198,3 @@ void GP2Pipeline::DrawScene(const VkExtent2D& swapChainExtent, const GP2Camera& 
 {
 	m_pScene->Draw(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, swapChainExtent, camera);
 }
-
-//void GP2Pipeline::UpdateScene(const GP2Camera& camera) const
-//{
-//	m_pScene->Update(camera);
-//}

@@ -63,6 +63,8 @@ class VulkanBase
 public:
 	VulkanBase() = default;
 
+	void KeyEvent(int key, int scancode, int action, int mods);
+
 	void run() {
 		initWindow();
 		initVulkan();
@@ -133,8 +135,6 @@ private:
 
 	void initVulkan()
 	{
-		//GP2SphereMesh pbrSphereMesh{ glm::vec3{0.0f,10.0f,0.0f}, 5.0f };
-		//GP23DMesh stormtrooperMesh{ "resources/stormtrooper.obj", glm::vec3{0,0, -35} };
 
 		// week 06
 		createInstance();
@@ -196,8 +196,10 @@ private:
 			glfwPollEvents();
 
 			m_Camera.Update();
-			m_3DScene.Update(m_Camera);
-			m_PBRScene.Update(m_Camera);
+
+
+			//m_3DScene.Update(m_Camera, true);
+			m_PBRScene.Update(m_Camera, m_UseNormalMap, m_UseDiffuseMap, m_UseGlossinessMap, m_UseSpecularMap);
 
 			// week 06
 			drawFrame();
@@ -428,4 +430,37 @@ private:
 	}
 
 	GP2Camera m_Camera{ {0,0,-100}, 30, WIDTH, HEIGHT };
+
+
+	bool m_UseNormalMap{ true };
+	bool m_UseGlossinessMap{ true };
+	bool m_UseSpecularMap{ true };
+	bool m_UseDiffuseMap{ true };
 };
+
+
+
+//Inputs
+inline void VulkanBase::KeyEvent(int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
+	{
+		m_UseDiffuseMap = !m_UseDiffuseMap;
+		return;
+	}
+	if (key == GLFW_KEY_F4 && action == GLFW_PRESS)
+	{
+		m_UseNormalMap = !m_UseNormalMap;
+		return;
+	}
+	if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
+	{
+		m_UseSpecularMap = !m_UseSpecularMap;
+		return;
+	}
+	if (key == GLFW_KEY_F6 && action == GLFW_PRESS)
+	{
+		m_UseGlossinessMap = !m_UseGlossinessMap;
+		return;
+	}
+}

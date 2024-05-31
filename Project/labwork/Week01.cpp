@@ -15,6 +15,7 @@ void VulkanBase::initWindow()
 			void* pUser = glfwGetWindowUserPointer(window);
 			VulkanBase* vBase = static_cast<VulkanBase*>(pUser);
 			vBase->m_Camera.KeyEvent(key, scancode, action, mods);
+			vBase->KeyEvent(key, scancode, action, mods);
 		});
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos)

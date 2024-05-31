@@ -17,6 +17,21 @@
 	{
 		"pos":
 		{
+			"x" : 0,
+			"y" : 0,
+			"z" : -35
+		},
+		"type": "Obj",
+		"path": "resources/stormtrooper.obj",
+		"textureMap":"textures/vehicle_diffuse.png",
+		"normalMap":"textures/vehicle_normal.png",
+		"specularMap":"textures/vehicle_specular.png",
+		"glossMap":"textures/vehicle_gloss.png"
+	},
+
+	{
+		"pos":
+		{
 			"x": 0,
 			"y": 0,
 			"z": 0
@@ -28,5 +43,20 @@
 		"normalMap":"textures/floor_normal.jpg",
 		"specularMap":"textures/floor_specular.jpg",
 		"glossMap":"textures/floor_gloss.jpg"
+	},
+
+	{
+		"pos":
+		{
+			"x": 0,
+			"y": 10,
+			"z": 0
+		},
+		"type": "Sphere",
+		"radius": 5,
+		"textureMap":"textures/vehicle_diffuse.png",
+		"normalMap":"textures/vehicle_normal.png",
+		"specularMap":"textures/vehicle_specular.png",
+		"glossMap":"textures/vehicle_gloss.png"
 	}
 ]

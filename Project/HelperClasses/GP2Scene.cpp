@@ -19,11 +19,11 @@ void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayo
 	}
 }
 
-void GP2Scene::Update(const GP2Camera& camera)
+void GP2Scene::Update(const GP2Camera& camera, const bool useNormalMap, const bool useDiffuseMap, const bool useGlossMap, const bool useSpecularMap)
 {
 	for (GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.Update(camera.GetPosition());
+		mesh.Update(camera.GetPosition(), useNormalMap, useDiffuseMap, useGlossMap, useSpecularMap);
 	}
 }
 

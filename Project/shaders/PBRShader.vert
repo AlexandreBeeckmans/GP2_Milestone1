@@ -46,5 +46,4 @@ void main()
 
     fragCameraPosition = mesh.cameraPosition;
     fragVertexPosition = mesh.model * vec4(inPosition, 1.0f);
-    
 }

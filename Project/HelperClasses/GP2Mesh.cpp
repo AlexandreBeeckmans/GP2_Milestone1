@@ -10,6 +10,9 @@
 #include<glm/gtc/matrix_transform.hpp>
 #include <chrono>
 
+#include "GP23DMesh.h"
+#include "GP23DMesh.h"
+
 GP2Mesh::GP2Mesh(const glm::vec3& position) :
 m_Position(position),
 m_VertexConstant()
@@ -55,10 +58,13 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayou
 	vkCmdPushConstants(
 		commandBuffer,
 		pipelineLayout,
-		VK_SHADER_STAGE_VERTEX_BIT, // Stage flag should match the push constan range in the layout
+		VK_SHADER_STAGE_VERTEX_BIT, // Stage flag should match the push constant range in the layout
 		0, // Offset within the push constant block
 		sizeof(MeshData), // Size of the push constants to update
 		&m_Constants); // Pointer to the data);
+
+	vkCmdPushConstants(
+		commandBuffer, pipelineLayout, VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(MeshData), sizeof(ToggleMapData), &m_ToggleConstants);
 
 	
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
@@ -89,7 +95,7 @@ void GP2Mesh::AddIndex(size_t value)
 	m_Indices.push_back(static_cast<uint16_t>(value));
 }
 
-void GP2Mesh::Update(const glm::vec3& cameraPosition)
+void GP2Mesh::Update(const glm::vec3& cameraPosition, const bool useNormalMap, const bool useDiffuseMap, const bool useGlossMap, const bool useSpecularMap)
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -104,6 +110,7 @@ void GP2Mesh::Update(const glm::vec3& cameraPosition)
 	m_CameraPositionConstant = cameraPosition;
 
 	m_Constants = { m_VertexConstant, m_CameraPositionConstant };
+	m_ToggleConstants = { static_cast<int>(useNormalMap), static_cast<int>(useDiffuseMap), static_cast<int>(useSpecularMap), static_cast<int>(useGlossMap) };
 }
 
 void GP2Mesh::InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& vertexShaderPath, const std::string fragmentShaderPath)

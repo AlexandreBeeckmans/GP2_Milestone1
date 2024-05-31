@@ -5,6 +5,14 @@ layout(binding = 2) uniform sampler2D normalSampler;
 layout(binding = 3) uniform sampler2D specularSampler;
 layout(binding = 4) uniform sampler2D glossSampler;
 
+layout(push_constant) uniform Constants
+{
+    layout(offset = 76) int useNormalMap;
+    layout(offset = 80) int useDiffuseMap;
+    layout(offset = 84) int useSpecularMap;
+    layout(offset = 88) int useGlossinessMap;
+} constant;
+
 
 
 layout(location = 0) in vec3 fragColor;
@@ -17,14 +25,8 @@ layout(location = 5) in vec4 fragVertexPosition;
 
 layout(location = 0) out vec4 outColor;
 
-
-void main() 
+vec3 CalculateMappedNormal()
 {
-    const vec3 lightDirection = vec3(0.577f, -0.577f, 0.577f);
-    const float lightIntensity = 7.0f;
-    const float shininess = 5.0f;
-    const vec3 ambientLighting = vec3(0.025f, 0.025f, 0.025f);
-
     vec3 binormal = cross(fragNormal, fragTangent);
         
     mat3x3 tangentSpaceAxis = mat3x3( normalize(fragTangent),normalize(binormal),normalize(fragNormal));
@@ -36,13 +38,37 @@ void main()
     sampledNormal.y -= 1.0f;
     sampledNormal.z -= 1.0f;
     
-    vec3 finalNormal =  tangentSpaceAxis * normalize(sampledNormal);;
+    return tangentSpaceAxis * normalize(sampledNormal);
+}
+
+
+void main() 
+{
+    const vec3 lightDirection = vec3(0.577f, -0.577f, 0.577f);
+    const float lightIntensity = 7.0f;
+    const float shininess = 5.0f;
+    const vec3 ambientLighting = vec3(0.025f, 0.025f, 0.025f);
+
+    vec3 finalNormal = fragNormal;
+
+    if(constant.useNormalMap == 1)
+    {
+       finalNormal = CalculateMappedNormal();
+    }
+    
 
     float observedArea = dot(-lightDirection, finalNormal);
 
 
+    vec3 specularValue = vec3(0,0,0);
 
-    vec3 specularValue = vec3(texture(specularSampler, fragUV));
+    if(constant.useSpecularMap == 1)
+    {
+        specularValue = vec3(texture(specularSampler, fragUV));
+    }
+    
+
+
     vec3 reflection = reflect(-lightDirection, finalNormal);
 
     vec3 invViewDirection = normalize(fragCameraPosition - fragVertexPosition.xyz);
@@ -50,11 +76,18 @@ void main()
 
 	//If cosine is lower than zero we take a 0 value
     float cosinus = max(0.0f, dot(reflection, invViewDirection));
+
+    float glossValue = 0;
+    if(constant.useGlossinessMap == 1)
+    {
+        glossValue = texture(glossSampler, fragUV).r;
+    }
+
     vec3 specularReflection =
 	vec3(
-        specularValue.x * pow(cosinus, (shininess * texture(glossSampler, fragUV).r)),
-		specularValue.y * pow(cosinus, (shininess * texture(glossSampler, fragUV).r)),
-		specularValue.z * pow(cosinus, (shininess * texture(glossSampler, fragUV).r))
+        specularValue.x * pow(cosinus, (shininess * glossValue)),
+		specularValue.y * pow(cosinus, (shininess * glossValue)),
+		specularValue.z * pow(cosinus, (shininess * glossValue))
 	);
     
 
@@ -68,7 +101,13 @@ void main()
     if(observedArea > 0)
     {
 
-        vec3 diffuseSpecularColor = vec3(texture(texSampler, fragUV)) + specularReflection * lightIntensity;
+        vec3 diffuseColor = vec3(1,1,1);
+        if(constant.useDiffuseMap == 1)
+        {
+            diffuseColor = vec3(texture(texSampler, fragUV));
+        }
+
+        vec3 diffuseSpecularColor = diffuseColor + specularReflection * lightIntensity;
 
         vec3 finalColor = diffuseSpecularColor * observedArea + ambientLighting;
 

@@ -31,7 +31,8 @@ public:
 	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0}, glm::vec3 tangent = {0,0,0});
 	void AddVertex(const Vertex3D& vertex);
 	void AddIndex(size_t value);
-	void Update(const glm::vec3& cameraPosition);
+	void Update(const glm::vec3& cameraPosition, const bool useNormalMap, const bool useDiffuseMap, const bool useGlossMap, const bool
+	            useSpecularMap);
 
 	void InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
 	                graphicsQueue, const std::string& vertexShaderPath, const std::string fragmentShaderPath);
@@ -58,6 +59,7 @@ private:
 	glm::mat4 m_VertexConstant;
 	glm::vec3 m_CameraPositionConstant;
 	MeshData m_Constants{};
+	ToggleMapData m_ToggleConstants{};
 
 
 	std::unique_ptr<GP2Shader> m_Shader{nullptr};
