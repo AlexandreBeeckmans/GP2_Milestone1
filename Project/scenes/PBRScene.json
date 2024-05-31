@@ -1,0 +1,35 @@
+[
+	{
+		"pos":
+		{
+			"x" : -25.0,
+			"y" : 0,
+			"z" : 0
+		},
+		"type": "Obj",
+		"path": "resources/vehicle.obj"
+	},
+
+	{
+		"pos":
+		{
+			"x" : 0,
+			"y" : 0,
+			"z" : 0
+		},
+		"type": "Cube",
+		"width": 5,
+		"height": 5
+	},
+
+	{
+		"pos":
+		{
+			"x" : 0,
+			"y" : 25,
+			"z" : 0
+		},
+		"type": "Sphere",
+		"radius": 10
+	}
+]

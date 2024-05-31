@@ -30,6 +30,7 @@
 #include "HelperClasses/GP2Image.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
 #include "HelperClasses/GP2SphereMesh.h"
+#include <SceneLoader.h>
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
@@ -146,9 +147,11 @@ private:
 
 		GP23DMesh loadedMesh{ glm::vec3{-25.0f,0,0} };
 		GP2CubeMesh pbrCubeMesh{ glm::vec3{0, 0, 0}, 5.0f, 5.0f };
+		//m_PBRScene.AddMesh(loadedMesh);
+		//m_PBRScene.AddMesh(pbrCubeMesh);
+		LoadScene("scenes/PBRScene.json", m_PBRScene);
+
 		
-		m_PBRScene.AddMesh(loadedMesh);
-		m_PBRScene.AddMesh(pbrCubeMesh);
 		
 
 

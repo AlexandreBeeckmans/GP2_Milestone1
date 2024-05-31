@@ -13,6 +13,13 @@ add_custom_command(
     ${CMAKE_CURRENT_SOURCE_DIR}/textures
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/textures)
 
+add_custom_target(copy_scenes ALL)
+add_custom_command(
+    TARGET copy_scenes PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/scenes
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/scenes)
+
 
 set(SHADER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 set(SHADER_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/shaders")
@@ -90,7 +97,7 @@ set(SOURCES
     "HelperClasses/GP2Image.h" 
     "HelperClasses/GP2Image.cpp"
     "HelperClasses/GP2SphereMesh.h"
-    "HelperClasses/GP2SphereMesh.cpp")
+    "HelperClasses/GP2SphereMesh.cpp" "SceneLoader.h")
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )
@@ -100,3 +107,17 @@ add_dependencies(${PROJECT_NAME} Shaders)
 # Link libraries
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glfw)
+
+include(FetchContent)
+
+FetchContent_Declare(
+	json
+	GIT_REPOSITORY https://github.com/nlohmann/json.git
+	GIT_TAG v3.11.3
+	GIT_SHALLOW 1
+	GIT_PROGRESS 1
+)
+# Make the fetched content available
+FetchContent_MakeAvailable(json)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
