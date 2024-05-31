@@ -50,8 +50,8 @@ void VulkanBase::drawFrame() {
 	m_CommandBuffer.BeginRecording();
 	BeginRenderPass(m_CommandBuffer, m_SwapChainFramebuffers[imageIndex], swapChainExtent);
 
-	//m_2DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
-	//m_3DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
+	m_2DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
+	m_3DPipeline.Record(imageIndex, swapChainExtent, m_Camera);
 	m_PBRPipeline.Record(imageIndex, swapChainExtent, m_Camera);
 	//m_FloorPBRPipeline.Record(imageIndex, swapChainExtent, m_Camera);
 

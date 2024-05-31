@@ -22,8 +22,8 @@ public:
 
 	void Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout, const VkExtent2D& swapChainExtent, const
 	          GP2Camera& camera) const;
-	void Update(const GP2Camera& camera, const bool useNormalMap, const bool useDiffuseMap, const bool useGlossMap, const bool
-	            useSpecularMap);
+	void Update(const GP2Camera& camera, const bool useNormalMap = true, const bool useDiffuseMap = true, const bool useGlossMap = true, const bool
+	            useSpecularMap = true);
 
 	void AddMesh(GP2Mesh& mesh);
 

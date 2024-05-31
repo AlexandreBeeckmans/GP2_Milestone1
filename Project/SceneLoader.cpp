@@ -30,7 +30,12 @@ void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene, const s
 			LoadedMesh temp{};
 			temp.position.x = obj["pos"]["x"];
 			temp.position.y = obj["pos"]["y"];
-			temp.position.z = obj["pos"]["z"];
+
+			if(obj["pos"].contains("z"))
+			{
+				temp.position.z = obj["pos"]["z"];
+			}
+			
 			temp.type = obj["type"];
 
 			GP2Mesh meshToAdd{};
@@ -55,11 +60,51 @@ void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene, const s
 				meshToAdd = GP23DMesh { path, temp.position };
 			}
 
-			
-			meshToAdd.SetTextureMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["textureMap"]);
-			meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["normalMap"]);
-			meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["specularMap"]);
-			meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue,obj["glossMap"]);
+			if(temp.type == "Circle")
+			{
+				const float radiusX{ obj["radiusX"] };
+				const float radiusY{ obj["radiusY"] };
+				const size_t nbDivisions{ obj["nbDivisions"] };
+
+				meshToAdd = GP2CircleMesh{ glm::vec2{temp.position}, radiusX, radiusY, nbDivisions };
+			}
+
+			if(temp.type == "Rectangle")
+			{
+				const float width{ obj["width"] };
+				const float height{ obj["height"] };
+				meshToAdd = GP2RectangleMesh{ glm::vec2{temp.position}, width, height };
+			}
+
+			if (temp.type == "RoundedRectangle")
+			{
+				const float width{ obj["width"] };
+				const float height{ obj["height"] };
+				const float roundedPercentage{ obj["roundedPercentage"] };
+
+				meshToAdd = GP2RoundedRectangleMesh{ glm::vec2{temp.position}, width, height, roundedPercentage };
+			}
+
+
+			if(obj.contains("textureMap"))
+			{
+				meshToAdd.SetTextureMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["textureMap"]);
+			}
+
+			if(obj.contains("normalMap"))
+			{
+				meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["normalMap"]);
+			}
+
+			if(obj.contains("specularMap"))
+			{
+				meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["specularMap"]);
+			}
+
+			if(obj.contains("glossMap"))
+			{
+				meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["glossMap"]);
+			}
 			meshToAdd.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, vertexShaderPath, fragmentShaderPath);
 
 

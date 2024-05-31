@@ -1,0 +1,36 @@
+[
+	{
+		"pos":
+		{
+			"x" : 0.8,
+			"y" : -0.8
+		},
+		"type": "Circle",
+		"radiusX":0.2,
+		"radiusY":0.25,
+		"nbDivisions":32
+	},
+
+	{
+		"pos":
+		{
+			"x" : -0.75,
+			"y" : -0.75
+		},
+		"type": "Rectangle",
+		"width": 0.65,
+		"height": 0.45
+	},
+
+	{
+		"pos":
+		{
+			"x" : -0.75,
+			"y" : 0.75
+		},
+		"type": "RoundedRectangle",
+		"width": 0.65,
+		"height": 0.45,
+		"roundedPercentage":0.25
+	}
+]

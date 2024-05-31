@@ -157,30 +157,11 @@ private:
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
-
-
-		GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
-		circleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
-		m_2DScene.AddMesh(circleMesh);
-
-		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
-		rectangleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
-		m_2DScene.AddMesh(rectangleMesh);
-
-		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
-		roundedRectangleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
-		m_2DScene.AddMesh(roundedRectangleMesh);
-
-
+		LoadScene("scenes/2DScene.json", m_2DScene, m_2DPipeline.GetFragmentShaderPath(), m_2DPipeline.GetVertexShaderPath());
 		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 
-		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
-		cubeMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_3DPipeline.GetVertexShaderPath(), m_3DPipeline.GetFragmentShaderPath());
-		GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
-		sphereMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_3DPipeline.GetVertexShaderPath(), m_3DPipeline.GetFragmentShaderPath());
-		m_3DScene.AddMesh(cubeMesh);
-		m_3DScene.AddMesh(sphereMesh);
+		LoadScene("scenes/3DScene.json", m_3DScene, m_3DPipeline.GetFragmentShaderPath(), m_3DPipeline.GetVertexShaderPath());
 		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 		LoadScene("scenes/PBRScene.json", m_PBRScene, m_PBRPipeline.GetFragmentShaderPath(), m_PBRPipeline.GetVertexShaderPath());
@@ -198,7 +179,7 @@ private:
 			m_Camera.Update();
 
 
-			//m_3DScene.Update(m_Camera, true);
+			m_3DScene.Update(m_Camera);
 			m_PBRScene.Update(m_Camera, m_UseNormalMap, m_UseDiffuseMap, m_UseGlossinessMap, m_UseSpecularMap);
 
 			// week 06
