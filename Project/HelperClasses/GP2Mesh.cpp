@@ -14,6 +14,7 @@ GP2Mesh::GP2Mesh(const glm::vec3& position) :
 m_Position(position),
 m_VertexConstant()
 {
+
 }
 
 void GP2Mesh::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue)
@@ -31,14 +32,17 @@ void GP2Mesh::Destroy(const VkDevice& vkDevice) const
 	m_VertexBuffer->Destroy(vkDevice);
 	m_IndexBuffer->Destroy(vkDevice);
 
-	m_Shader->DestroyShaderModules(vkDevice);
-	m_Shader->DestroyUniformBuffer(vkDevice);
-	vkDestroyDescriptorSetLayout(vkDevice, m_Shader->GetDescriptorSetLayout(), nullptr);
+	if(m_Shader)
+	{
+		m_Shader->DestroyShaderModules(vkDevice);
+		m_Shader->DestroyUniformBuffer(vkDevice);
+		vkDestroyDescriptorSetLayout(vkDevice, m_Shader->GetDescriptorSetLayout(), nullptr);
+	}
 
-	m_TextureMap->Destroy(vkDevice);
-	m_NormalMap->Destroy(vkDevice);
-	m_SpecularMap->Destroy(vkDevice);
-	m_GlossMap->Destroy(vkDevice);
+	if(m_TextureMap) m_TextureMap->Destroy(vkDevice);
+	if(m_NormalMap) m_NormalMap->Destroy(vkDevice);
+	if(m_SpecularMap) m_SpecularMap->Destroy(vkDevice);
+	if(m_GlossMap) m_GlossMap->Destroy(vkDevice);
 }
 
 void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VkExtent2D& swapChainExtent, const GP2Camera& camera) const
@@ -102,13 +106,21 @@ void GP2Mesh::Update(const glm::vec3& cameraPosition)
 	m_Constants = { m_VertexConstant, m_CameraPositionConstant };
 }
 
-void GP2Mesh::InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const std::string& vertexShaderPath, const std::string fragmentShaderPath)
+void GP2Mesh::InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& vertexShaderPath, const std::string fragmentShaderPath)
 {
 	m_Shader = std::make_unique<GP2Shader>(vertexShaderPath, fragmentShaderPath);
 	m_Shader->Initialize(vkDevice, vkPhysicalDevice);
 
 	m_Shader->CreateDescriptorSetLayout(vkDevice);
+
+	if (!m_TextureMap) SetTextureMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
+	if (!m_NormalMap) SetNormalMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
+	if (!m_SpecularMap) SetSpecularMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
+	if (!m_GlossMap) SetGlossMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
+
+
 	m_Shader->CreateDescriptorSets(vkDevice, *m_TextureMap, *m_NormalMap, *m_SpecularMap, *m_GlossMap);
+	
 }
 
 void GP2Mesh::SetTextureMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& textureMapPath)

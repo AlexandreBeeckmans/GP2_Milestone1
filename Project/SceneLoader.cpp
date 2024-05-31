@@ -60,7 +60,7 @@ void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene, const s
 			meshToAdd.SetNormalMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["normalMap"]);
 			meshToAdd.SetSpecularMap(device, physicalDevice, m_CommandPool, graphicsQueue, obj["specularMap"]);
 			meshToAdd.SetGlossMap(device, physicalDevice, m_CommandPool, graphicsQueue,obj["glossMap"]);
-			meshToAdd.InitShader(device, physicalDevice, vertexShaderPath, fragmentShaderPath);
+			meshToAdd.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, vertexShaderPath, fragmentShaderPath);
 
 
 			scene.AddMesh(meshToAdd);

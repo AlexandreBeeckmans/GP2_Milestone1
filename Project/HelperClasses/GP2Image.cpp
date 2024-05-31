@@ -9,6 +9,7 @@ void GP2Image::Initialize(const VkDevice& device, const VkPhysicalDevice& physic
 	CreateTextureImage(texturePath, device, physicalDevice, commandPool, graphicsQueue);
 	CreateTextureImageView(device);
 	CreateImageSampler(device, physicalDevice);
+	m_IsInit = true;
 }
 
 void GP2Image::Destroy(const VkDevice& device)

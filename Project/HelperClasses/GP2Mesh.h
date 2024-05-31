@@ -33,8 +33,8 @@ public:
 	void AddIndex(size_t value);
 	void Update(const glm::vec3& cameraPosition);
 
-	void InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const std::string& vertexShaderPath, const std::
-	                string fragmentShaderPath);
+	void InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
+	                graphicsQueue, const std::string& vertexShaderPath, const std::string fragmentShaderPath);
 	void SetTextureMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
 	                   graphicsQueue, const std::string& textureMapPath);
 	void SetNormalMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&

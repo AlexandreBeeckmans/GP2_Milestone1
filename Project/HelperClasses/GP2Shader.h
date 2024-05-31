@@ -33,7 +33,7 @@ public:
 	VkPipelineVertexInputStateCreateInfo GetVertexInputStateInfo() const;
 	static VkPipelineInputAssemblyStateCreateInfo CreateInputAssemblyStateInfo();
 
-	void CreateDescriptorSets(const VkDevice& vkDevice, const GP2Image& textureMap, const GP2Image& normalMap, const GP2Image& specularMap = {}, const GP2Image& glossMap = {}) const
+	void CreateDescriptorSets(const VkDevice& vkDevice, const GP2Image& textureMap = {}, const GP2Image& normalMap = {}, const GP2Image& specularMap = {}, const GP2Image& glossMap = {}) const
 	{
 		m_DescriptorPool->CreateDescriptorSets(vkDevice, m_DescriptorSetLayout, { m_UBOBuffer->GetVkBuffer() }, textureMap, normalMap, specularMap, glossMap);
 	}

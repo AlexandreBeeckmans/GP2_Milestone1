@@ -13,6 +13,7 @@ public:
 
 	VkImageView GetImageView() const { return m_TextureImageView; }
 	VkSampler GetSampler() const { return m_TextureSampler; }
+	bool IsInit() const { return m_IsInit; }
 private:
 	void CreateTextureImage(const std::string& texturePath, const VkDevice& device, const VkPhysicalDevice& physicalDevice, const GP2CommandPool&
 	                        commandPool, const VkQueue& graphicsQueue);
@@ -31,4 +32,6 @@ private:
 	VkDeviceMemory m_TextureImageMemory{};
 	VkImageView m_TextureImageView{};
 	VkSampler m_TextureSampler{};
+
+	bool m_IsInit{ false };
 };

@@ -133,26 +133,8 @@ private:
 
 	void initVulkan()
 	{
-		//GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
-		//m_2DScene.AddMesh(circleMesh);
-		//GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
-		//m_2DScene.AddMesh(rectangleMesh);
-		//GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
-		//m_2DScene.AddMesh(roundedRectangleMesh);
-
-		//GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
-		//GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
-		//m_3DScene.AddMesh(cubeMesh);
-		//m_3DScene.AddMesh(sphereMesh);
-
-		
-		
-
-
 		//GP2SphereMesh pbrSphereMesh{ glm::vec3{0.0f,10.0f,0.0f}, 5.0f };
 		//GP23DMesh stormtrooperMesh{ "resources/stormtrooper.obj", glm::vec3{0,0, -35} };
-		//m_FloorPBRScene.AddMesh(pbrSphereMesh);
-		//m_FloorPBRScene.AddMesh(stormtrooperMesh);
 
 		// week 06
 		createInstance();
@@ -175,10 +157,31 @@ private:
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
-		//m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
 
 
-		//m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
+		circleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
+		m_2DScene.AddMesh(circleMesh);
+
+		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
+		rectangleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
+		m_2DScene.AddMesh(rectangleMesh);
+
+		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
+		roundedRectangleMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_2DPipeline.GetVertexShaderPath(), m_2DPipeline.GetFragmentShaderPath());
+		m_2DScene.AddMesh(roundedRectangleMesh);
+
+
+		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
+
+
+		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
+		cubeMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_3DPipeline.GetVertexShaderPath(), m_3DPipeline.GetFragmentShaderPath());
+		GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
+		sphereMesh.InitShader(device, physicalDevice, m_CommandPool, graphicsQueue, m_3DPipeline.GetVertexShaderPath(), m_3DPipeline.GetFragmentShaderPath());
+		m_3DScene.AddMesh(cubeMesh);
+		m_3DScene.AddMesh(sphereMesh);
+		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 		LoadScene("scenes/PBRScene.json", m_PBRScene, m_PBRPipeline.GetFragmentShaderPath(), m_PBRPipeline.GetVertexShaderPath());
 		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
