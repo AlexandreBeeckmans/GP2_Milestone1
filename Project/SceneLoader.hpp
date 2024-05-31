@@ -1,4 +1,3 @@
-#pragma once
 #include <string>
 #include"HelperClasses/GP2Scene.h"
 #include <fstream>

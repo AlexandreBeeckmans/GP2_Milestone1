@@ -48,8 +48,16 @@ void GP2Shader::DestroyShaderModules(const VkDevice& vkDevice)
 
 void GP2Shader::DestroyUniformBuffer(const VkDevice& vkDevice) const
 {
-	m_UBOBuffer->Destroy(vkDevice);
-	m_DescriptorPool->DestroyPool(vkDevice);
+	if(m_UBOBuffer)
+	{
+		m_UBOBuffer->Destroy(vkDevice);
+	}
+
+	if(m_DescriptorPool)
+	{
+		m_DescriptorPool->DestroyPool(vkDevice);
+	}
+	
 }
 
 const std::vector<VkPipelineShaderStageCreateInfo>& GP2Shader::GetShaderStages()

@@ -30,12 +30,23 @@ void GP2Mesh::Destroy(const VkDevice& vkDevice) const
 {
 	m_VertexBuffer->Destroy(vkDevice);
 	m_IndexBuffer->Destroy(vkDevice);
+
+	m_Shader->DestroyShaderModules(vkDevice);
+	m_Shader->DestroyUniformBuffer(vkDevice);
+	vkDestroyDescriptorSetLayout(vkDevice, m_Shader->GetDescriptorSetLayout(), nullptr);
+
+	m_TextureMap->Destroy(vkDevice);
+	m_NormalMap->Destroy(vkDevice);
+	m_SpecularMap->Destroy(vkDevice);
+	m_GlossMap->Destroy(vkDevice);
 }
 
-void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const
+void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VkExtent2D& swapChainExtent, const GP2Camera& camera) const
 {
 	m_VertexBuffer->BindAsVertexBuffer(commandBuffer);
 	m_IndexBuffer->BindAsIndexBuffer(commandBuffer);
+
+	m_Shader->BindDescriptorSet(commandBuffer, pipelineLayout, 0);
 
 	vkCmdPushConstants(
 		commandBuffer,
@@ -45,7 +56,10 @@ void GP2Mesh::Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayou
 		sizeof(MeshData), // Size of the push constants to update
 		&m_Constants); // Pointer to the data);
 
+	
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
+
+	m_Shader->UpdateUniformBuffer(0, swapChainExtent.width / (float)swapChainExtent.height, 45.f, camera);
 }
 
 void GP2Mesh::AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal, glm::vec2 uv, glm::vec3 tangent)
@@ -86,6 +100,42 @@ void GP2Mesh::Update(const glm::vec3& cameraPosition)
 	m_CameraPositionConstant = cameraPosition;
 
 	m_Constants = { m_VertexConstant, m_CameraPositionConstant };
+}
+
+void GP2Mesh::InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const std::string& vertexShaderPath, const std::string fragmentShaderPath)
+{
+	m_Shader = std::make_unique<GP2Shader>(vertexShaderPath, fragmentShaderPath);
+	m_Shader->Initialize(vkDevice, vkPhysicalDevice);
+
+	m_Shader->CreateDescriptorSetLayout(vkDevice);
+	m_Shader->CreateDescriptorSets(vkDevice, *m_TextureMap, *m_NormalMap, *m_SpecularMap, *m_GlossMap);
+}
+
+void GP2Mesh::SetTextureMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& textureMapPath)
+{
+	m_TextureMap = std::make_unique<GP2Image>();
+	m_TextureMap->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, textureMapPath);
+}
+
+void GP2Mesh::SetNormalMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice,
+	const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& textureMapPath)
+{
+	m_NormalMap = std::make_unique<GP2Image>();
+	m_NormalMap->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, textureMapPath);
+}
+
+void GP2Mesh::SetSpecularMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice,
+	const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& textureMapPath)
+{
+	m_SpecularMap = std::make_unique<GP2Image>();
+	m_SpecularMap->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, textureMapPath);
+}
+
+void GP2Mesh::SetGlossMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice,
+	const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string& textureMapPath)
+{
+	m_GlossMap = std::make_unique<GP2Image>();
+	m_GlossMap->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, textureMapPath);
 }
 
 int GP2Mesh::GetNumberVertices()const

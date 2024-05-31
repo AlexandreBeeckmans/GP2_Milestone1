@@ -11,11 +11,11 @@ void GP2Scene::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPh
 	}
 }
 
-void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout) const
+void GP2Scene::Draw(const VkCommandBuffer& vkCommandBuffer, const VkPipelineLayout pipelineLayout, const VkExtent2D& swapChainExtent, const GP2Camera& camera) const
 {
 	for (const GP2Mesh& mesh : m_Meshes)
 	{
-		mesh.Draw(vkCommandBuffer, pipelineLayout);
+		mesh.Draw(vkCommandBuffer, pipelineLayout, swapChainExtent, camera);
 	}
 }
 

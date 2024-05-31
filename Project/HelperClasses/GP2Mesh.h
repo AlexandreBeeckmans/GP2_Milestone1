@@ -9,6 +9,10 @@
 #include "GP2DataBuffer.h"
 
 
+#include "GP2Shader.h"
+#include"GP2Image.h"
+
+
 struct Vertex3D;
 
 class GP2Mesh
@@ -20,13 +24,25 @@ public:
 	void Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue);
 	void Destroy(const VkDevice& vkDevice) const;
 
-	void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout) const;
+	void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout, const VkExtent2D& swapChainExtent, const GP2Camera&
+	          camera) const;
 	
 	void AddVertex(glm::vec2 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0}, glm::vec3 tangent = { 0,0,0 });
 	void AddVertex(glm::vec3 pos, glm::vec3 color, glm::vec3 normal = {0,0,0 }, glm::vec2 uv = {0,0}, glm::vec3 tangent = {0,0,0});
 	void AddVertex(const Vertex3D& vertex);
 	void AddIndex(size_t value);
 	void Update(const glm::vec3& cameraPosition);
+
+	void InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const std::string& vertexShaderPath, const std::
+	                string fragmentShaderPath);
+	void SetTextureMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
+	                   graphicsQueue, const std::string& textureMapPath);
+	void SetNormalMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
+		graphicsQueue, const std::string& textureMapPath);
+	void SetSpecularMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
+		graphicsQueue, const std::string& textureMapPath);
+	void SetGlossMap(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool& commandPool, const VkQueue&
+		graphicsQueue, const std::string& textureMapPath);
 
 protected:
 	int GetNumberVertices()const;
@@ -42,5 +58,13 @@ private:
 	glm::mat4 m_VertexConstant;
 	glm::vec3 m_CameraPositionConstant;
 	MeshData m_Constants{};
+
+
+	std::unique_ptr<GP2Shader> m_Shader{nullptr};
+
+	std::unique_ptr<GP2Image> m_TextureMap{nullptr};
+	std::unique_ptr<GP2Image> m_NormalMap{ nullptr };
+	std::unique_ptr<GP2Image> m_SpecularMap{ nullptr };
+	std::unique_ptr<GP2Image> m_GlossMap{ nullptr };
 	
 };

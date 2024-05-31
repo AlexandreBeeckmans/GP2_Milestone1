@@ -15,20 +15,18 @@ GP2Pipeline::GP2Pipeline(const std::string& vertexShaderPath, const std::string&
 void GP2Pipeline::Initialize(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhysicalDevice, const GP2CommandPool commandPool, const VkQueue& graphicsQueue, const VkRenderPass& renderPass, GP2CommandBuffer* pCommandBuffer, const GP2Image& texture, const GP2Image& normalMap, const GP2Image& specularMap, const GP2Image& glossMap)
 {
 	m_Shader.Initialize(vkDevice, vkPhysicalDevice);
-
 	m_Shader.CreateDescriptorSetLayout(vkDevice);
-	m_Shader.CreateDescriptorSets(vkDevice, texture, normalMap, specularMap, glossMap);
+
+	//m_Shader.CreateDescriptorSets(vkDevice, texture, normalMap, specularMap, glossMap);
 
 	CreateGraphicsPipeline(vkDevice, renderPass);
 
 	m_pScene->Initialize(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue);
 	m_Buffer = pCommandBuffer;
 }
-void GP2Pipeline::Cleanup(const VkDevice& vkDevice)
+void GP2Pipeline::Cleanup(const VkDevice& vkDevice) const
 {
 	m_pScene->Cleanup(vkDevice);
-
-	
 
 	m_Shader.DestroyUniformBuffer(vkDevice);
 	vkDestroyDescriptorSetLayout(vkDevice, m_Shader.GetDescriptorSetLayout(), nullptr);
@@ -40,10 +38,9 @@ void GP2Pipeline::Cleanup(const VkDevice& vkDevice)
 void GP2Pipeline::Record(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera)
 {
 
-	m_Shader.BindDescriptorSet(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, 0);
-	DrawFrame(imageIndex, swapChainExtent);
-
-	m_Shader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f, camera);
+	//m_Shader.BindDescriptorSet(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, 0);
+	DrawFrame(imageIndex, swapChainExtent, camera);
+	//m_Shader.UpdateUniformBuffer(imageIndex, swapChainExtent.width / (float)swapChainExtent.height, 45.f, camera);
 }
 
 void GP2Pipeline::CreateGraphicsPipeline(const VkDevice& vkDevice, const VkRenderPass& renderPass)
@@ -159,7 +156,7 @@ VkPushConstantRange GP2Pipeline::CreatePushConstantRange() const
 		return pushConstantRange;
 }
 
-void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent)
+void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExtent, const GP2Camera& camera)
 {
 
 	vkCmdBindPipeline(m_Buffer->GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline);
@@ -178,11 +175,11 @@ void GP2Pipeline::DrawFrame(uint32_t imageIndex, const VkExtent2D& swapChainExte
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(m_Buffer->GetVkCommandBuffer(), 0, 1, &scissor);
 
-	DrawScene();
+	DrawScene(swapChainExtent, camera);
 }
-void GP2Pipeline::DrawScene() const
+void GP2Pipeline::DrawScene(const VkExtent2D& swapChainExtent, const GP2Camera& camera) const
 {
-	m_pScene->Draw(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout);
+	m_pScene->Draw(m_Buffer->GetVkCommandBuffer(), m_PipelineLayout, swapChainExtent, camera);
 }
 
 //void GP2Pipeline::UpdateScene(const GP2Camera& camera) const

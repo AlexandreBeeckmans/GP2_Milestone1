@@ -30,7 +30,6 @@
 #include "HelperClasses/GP2Image.h"
 #include "HelperClasses/GP2RoundedRectangleMesh.h"
 #include "HelperClasses/GP2SphereMesh.h"
-#include <SceneLoader.h>
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
@@ -129,36 +128,30 @@ public:
 
 
 private:
+	void LoadScene(const std::string& jsonPath, GP2Scene& scene);
+
 	void initVulkan()
 	{
+		//GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
+		//m_2DScene.AddMesh(circleMesh);
+		//GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
+		//m_2DScene.AddMesh(rectangleMesh);
+		//GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
+		//m_2DScene.AddMesh(roundedRectangleMesh);
 
-
-		GP2CircleMesh circleMesh{ glm::vec2{0.8f, -0.8f}, 0.2f, 0.25f, 32 };
-		m_2DScene.AddMesh(circleMesh);
-		GP2RectangleMesh rectangleMesh{ glm::vec2{-0.75f, -0.75f}, 0.65f, 0.45f };
-		m_2DScene.AddMesh(rectangleMesh);
-		GP2RoundedRectangleMesh roundedRectangleMesh{ glm::vec2{-0.75, 0.75f}, 0.75f, 0.5f, 0.25f };
-		m_2DScene.AddMesh(roundedRectangleMesh);
-
-		GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
-		GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
-		m_3DScene.AddMesh(cubeMesh);
-		m_3DScene.AddMesh(sphereMesh);
-
-		GP23DMesh loadedMesh{ glm::vec3{-25.0f,0,0} };
-		GP2CubeMesh pbrCubeMesh{ glm::vec3{0, 0, 0}, 5.0f, 5.0f };
-		//m_PBRScene.AddMesh(loadedMesh);
-		//m_PBRScene.AddMesh(pbrCubeMesh);
-		LoadScene("scenes/PBRScene.json", m_PBRScene);
+		//GP2CubeMesh cubeMesh{ glm::vec3{25.5f, -0.5f, -1.0f}, 5.0f, 5.0f };
+		//GP2SphereMesh sphereMesh{ glm::vec3{15.0f,0.0f,0.0f}, 5.0f };
+		//m_3DScene.AddMesh(cubeMesh);
+		//m_3DScene.AddMesh(sphereMesh);
 
 		
 		
 
 
-		GP2SphereMesh pbrSphereMesh{ glm::vec3{0.0f,10.0f,0.0f}, 5.0f };
-		GP23DMesh stormtrooperMesh{ "resources/stormtrooper.obj", glm::vec3{0,0, -35} };
-		m_FloorPBRScene.AddMesh(pbrSphereMesh);
-		m_FloorPBRScene.AddMesh(stormtrooperMesh);
+		//GP2SphereMesh pbrSphereMesh{ glm::vec3{0.0f,10.0f,0.0f}, 5.0f };
+		//GP23DMesh stormtrooperMesh{ "resources/stormtrooper.obj", glm::vec3{0,0, -35} };
+		//m_FloorPBRScene.AddMesh(pbrSphereMesh);
+		//m_FloorPBRScene.AddMesh(stormtrooperMesh);
 
 		// week 06
 		createInstance();
@@ -179,24 +172,24 @@ private:
 		CreateFrameBuffers();
 
 		m_CommandPool.Initialize(device, findQueueFamilies(physicalDevice));
-		
-
 		m_CommandBuffer = m_CommandPool.CreateCommandBuffer();
 
-		m_TextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
+		/*m_TextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_diffuse.png");
 		m_NormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_normal.png");
 		m_SpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_specular.png");
-		m_GlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_gloss.png");
+		m_GlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/vehicle_gloss.png");*/
 
-		m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
-		m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		//m_2DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		//m_3DPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		LoadScene("scenes/PBRScene.json", m_PBRScene);
 		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_TextureImage, m_NormalImage, m_SpecularImage, m_GlossImage);
+		
 
-		m_FloorTextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_diffuse.jpg");
-		m_FloorNormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_normal.jpg");
-		m_FloorSpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_specular.jpg");
-		m_FloorGlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_gloss.jpg");
-		m_FloorPBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer, m_FloorTextureImage, m_FloorNormalImage, m_FloorSpecularImage, m_FloorGlossImage);
+		//m_FloorTextureImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_diffuse.jpg");
+		//m_FloorNormalImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_normal.jpg");
+		//m_FloorSpecularImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_specular.jpg");
+		//m_FloorGlossImage.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, "textures/floor_gloss.jpg");
+		//m_FloorPBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
 
 		// week 06
