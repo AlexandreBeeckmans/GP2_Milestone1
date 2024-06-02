@@ -120,10 +120,10 @@ void GP2Mesh::InitShader(const VkDevice& vkDevice, const VkPhysicalDevice& vkPhy
 
 	m_Shader->CreateDescriptorSetLayout(vkDevice);
 
-	if (!m_TextureMap) SetTextureMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
-	if (!m_NormalMap) SetNormalMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
-	if (!m_SpecularMap) SetSpecularMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
-	if (!m_GlossMap) SetGlossMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/default_diffuse.jpg");
+	if (!m_TextureMap) SetTextureMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/defaultAlbedo.png");
+	if (!m_NormalMap) SetNormalMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/defaultNormal.png");
+	if (!m_SpecularMap) SetSpecularMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/defaultRoughness.png");
+	if (!m_GlossMap) SetGlossMap(vkDevice, vkPhysicalDevice, commandPool, graphicsQueue, "textures/defaultMetallic.png");
 
 
 	m_Shader->CreateDescriptorSets(vkDevice, *m_TextureMap, *m_NormalMap, *m_SpecularMap, *m_GlossMap);

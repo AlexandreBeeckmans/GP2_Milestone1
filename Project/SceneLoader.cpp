@@ -56,8 +56,14 @@ void VulkanBase::LoadScene(const std::string& jsonPath, GP2Scene& scene, const s
 			if (temp.type == "Obj")
 			{
 				const std::string path{ obj["path"] };
+				float scale = 1.0f;
 
-				meshToAdd = GP23DMesh { path, temp.position };
+				if(obj.contains("scale"))
+				{
+					scale = obj["scale"];
+				}
+
+				meshToAdd = GP23DMesh { path, temp.position, scale };
 			}
 
 			if(temp.type == "Circle")

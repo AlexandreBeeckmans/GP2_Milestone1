@@ -1,7 +1,7 @@
 #include "GP2Image.h"
 
 #include "GP2DataBuffer.h"
-#include "stb/stb_image.h"
+#include <stb_image.h>
 #include "vulkanbase/VulkanBase.h"
 
 void GP2Image::Initialize(const VkDevice& device, const VkPhysicalDevice& physicalDevice, const GP2CommandPool& commandPool, const VkQueue& graphicsQueue, const std::string texturePath)

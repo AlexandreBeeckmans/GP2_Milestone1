@@ -167,6 +167,9 @@ private:
 		LoadScene("scenes/PBRScene.json", m_PBRScene, m_PBRPipeline.GetFragmentShaderPath(), m_PBRPipeline.GetVertexShaderPath());
 		m_PBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
 
+		LoadScene("scenes/UnrealPBRScene.json", m_UnrealPBRScene, m_UnrealPBRPipeline.GetFragmentShaderPath(), m_UnrealPBRPipeline.GetVertexShaderPath());
+		m_UnrealPBRPipeline.Initialize(device, physicalDevice, m_CommandPool, graphicsQueue, m_RenderPass, &m_CommandBuffer);
+
 
 		// week 06
 		createSyncObjects();
@@ -181,6 +184,7 @@ private:
 
 			m_3DScene.Update(m_Camera);
 			m_PBRScene.Update(m_Camera, m_UseNormalMap, m_UseDiffuseMap, m_UseGlossinessMap, m_UseSpecularMap);
+			m_UnrealPBRScene.Update(m_Camera, m_UseNormalMap, m_UseDiffuseMap, m_UseGlossinessMap, m_UseSpecularMap);
 
 			// week 06
 			drawFrame();
@@ -202,6 +206,7 @@ private:
 		m_2DPipeline.Cleanup(device);
 		m_3DPipeline.Cleanup(device);
 		m_PBRPipeline.Cleanup(device);
+		m_UnrealPBRPipeline.Cleanup(device);
 
 		for (auto framebuffer : m_SwapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
@@ -319,6 +324,7 @@ private:
 	GP2Scene m_2DScene{};
 	GP2Scene m_3DScene{};
 	GP2Scene m_PBRScene{};
+	GP2Scene m_UnrealPBRScene{};
 
 	GP2Pipeline m_2DPipeline
 	{
@@ -339,6 +345,13 @@ private:
 		"shaders/PBRShader.vert.spv",
 		"shaders/PBRShader.frag.spv",
 		&m_PBRScene
+	};
+
+	GP2Pipeline m_UnrealPBRPipeline
+	{
+		"shaders/UnrealPBRShader.vert.spv",
+		"shaders/UnrealPBRShader.frag.spv",
+		&m_UnrealPBRScene
 	};
 
 	VkRenderPass m_RenderPass{};
@@ -427,21 +440,28 @@ inline void VulkanBase::KeyEvent(int key, int scancode, int action, int mods)
 	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
 	{
 		m_UseDiffuseMap = !m_UseDiffuseMap;
+
+		std::cout << "Diffuse Map " << (m_UseDiffuseMap ? "enabled" : "disabled") << std::endl;
+
+
 		return;
 	}
 	if (key == GLFW_KEY_F4 && action == GLFW_PRESS)
 	{
 		m_UseNormalMap = !m_UseNormalMap;
+		std::cout << "Normal Map " << (m_UseNormalMap ? "enabled" : "disabled") << std::endl;
 		return;
 	}
 	if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
 	{
 		m_UseSpecularMap = !m_UseSpecularMap;
+		std::cout << "Specular Map " << (m_UseSpecularMap ? "enabled" : "disabled") << std::endl;
 		return;
 	}
 	if (key == GLFW_KEY_F6 && action == GLFW_PRESS)
 	{
 		m_UseGlossinessMap = !m_UseGlossinessMap;
+		std::cout << "Glossiness Map " << (m_UseGlossinessMap ? "enabled" : "disabled") << std::endl;
 		return;
 	}
 }

@@ -58,5 +58,19 @@
 		"normalMap":"textures/vehicle_normal.png",
 		"specularMap":"textures/vehicle_specular.png",
 		"glossMap":"textures/vehicle_gloss.png"
+	},
+
+	{
+		"pos":
+		{
+			"x" : 35.0,
+			"y" : 15,
+			"z" : 0
+		},
+		"type": "Obj",
+		"path": "resources/characters_battery.obj",
+		"textureMap":"textures/Tx_Battery_C.png",
+		"normalMap":"textures/Tx_Battery_N.png",
+		"scale" : 0.1
 	}
 ]

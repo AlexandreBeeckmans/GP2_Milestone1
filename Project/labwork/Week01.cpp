@@ -1,5 +1,5 @@
 #include "vulkanbase/VulkanBase.h"
-#include "stb/stb_image.h"
+#include <stb_image.h>
 
 void VulkanBase::initWindow()
 {

@@ -108,17 +108,9 @@ add_dependencies(${PROJECT_NAME} Shaders)
 # Link libraries
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glfw)
-
-include(FetchContent)
-
-FetchContent_Declare(
-	json
-	GIT_REPOSITORY https://github.com/nlohmann/json.git
-	GIT_TAG v3.11.3
-	GIT_SHALLOW 1
-	GIT_PROGRESS 1
-)
-# Make the fetched content available
-FetchContent_MakeAvailable(json)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glm)
+target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+
+
+

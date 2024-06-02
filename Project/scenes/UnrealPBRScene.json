@@ -1,0 +1,30 @@
+[
+	{
+		"pos":
+		{
+			"x" : -25.0,
+			"y" : 15,
+			"z" : 0
+		},
+		"type": "Cube",
+		"width": 10,
+		"height": 10,
+		"textureMap":"textures/metal_Albedo.jpg",
+		"normalMap":"textures/metal_Normal.jpg",
+		"specularMap":"textures/metal_Roughness.jpg",
+		"glossMap":"textures/metal_Metalness.jpg"
+	},
+	{
+		"pos":
+		{
+			"x" : 35.0,
+			"y" : 0,
+			"z" : 0
+		},
+		"type": "Obj",
+		"path": "resources/characters_battery.obj",
+		"textureMap":"textures/Tx_Battery_C.png",
+		"normalMap":"textures/Tx_Battery_N.png",
+		"scale" : 0.1
+	}
+]

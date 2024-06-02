@@ -7,7 +7,7 @@ GP23DMesh::GP23DMesh(const glm::vec3& position) :
 {}
 
 
-GP23DMesh::GP23DMesh(const std::string& filePath, const glm::vec3& position):
+GP23DMesh::GP23DMesh(const std::string& filePath, const glm::vec3& position, const float scale):
 	GP2Mesh(position),
 	m_filePath{ filePath }
 {
@@ -19,7 +19,7 @@ GP23DMesh::GP23DMesh(const std::string& filePath, const glm::vec3& position):
 	for(const Vertex3D& vertex : vertices)
 	{
 		Vertex3D vertexToAdd{};
-		vertexToAdd.pos = vertex.pos + position;
+		vertexToAdd.pos = scale * vertex.pos + position;
 		vertexToAdd.color = glm::vec3{ 1.0f,0.5f,0 };
 		vertexToAdd.normal = vertex.normal;
 		vertexToAdd.uv = vertex.uv;

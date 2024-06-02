@@ -14,8 +14,32 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/glfw/glfw.git
   GIT_TAG        3.3.8 # Specify the version you need
 )
-
 FetchContent_MakeAvailable(glfw)
+
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG        bf71a834948186f4097caa076cd2663c69a10e1e
+)
+FetchContent_MakeAvailable(glm)
+
+FetchContent_Declare(
+	stb
+	GIT_REPOSITORY https://github.com/nothings/stb.git
+	GIT_TAG master
+)
+FetchContent_MakeAvailable(stb)
+
+FetchContent_Declare(
+	json
+	GIT_REPOSITORY https://github.com/nlohmann/json.git
+	GIT_TAG v3.11.3
+	GIT_SHALLOW 1
+	GIT_PROGRESS 1
+)
+# Make the fetched content available
+FetchContent_MakeAvailable(json)
+
 
 # Find the required packages
 find_package(Vulkan REQUIRED)
@@ -24,6 +48,7 @@ find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_subdirectory(Project)
+
 
 # If using validation layers, copy the required JSON files (optional)
 # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
